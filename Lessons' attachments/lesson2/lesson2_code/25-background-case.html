@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 背景图https://placekitten.com/1200/800 */
+      /* 背景透明，文字居中不透明 */
+      h1 {
+        font-size: 4rem;
+        position: relative;
+      }
+      .cat {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .cat::before {
+        content: '';
+        background-size: cover;
+        background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Orange_tabby_kitten.jpg/1024px-Orange_tabby_kitten.jpg');
+        opacity: 0.5;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        left: 0px;
+        bottom: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cat">
+      <h1>Cute kittehs everywhere!</h1>
+    </div>
+  </body>
+</html>
