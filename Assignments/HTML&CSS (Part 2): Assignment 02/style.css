@@ -1,0 +1,72 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.cards1 {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+    width: 100%;
+    padding: 24px;
+}
+
+.cards2 {
+    display: flex;
+    flex-direction: row;
+}
+
+.card1 {
+    width: 100%;
+    background-size: cover;
+    padding: 24px;
+    border-radius: 10px;
+    min-height: 220px;
+    color: white;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.card2 {
+
+}
+
+.title {
+    margin-bottom: 8px;
+}
+
+.description {
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.learn-more {
+    display: inline-block;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 10px;
+    border: white solid 2px;
+    color: white;
+    background: transparent;
+}
+
+#UX {
+    background: linear-gradient(to right, rgba(88, 0, 120, 0.85), rgba(88, 0, 120, 0.15)), url("https://mouseux.com/wp-content/uploads/2022/10/UX-research.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#Bootcamp {
+    background: linear-gradient(to right, rgba(0, 90, 200, 0.85), rgba(0, 150, 120, 0.20)), url("https://www.flexjobs.com/blog/wp-content/uploads/2020/01/09151859/coding-bootcamp-1024x486.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+@media (max-width: 720px) {
+    .cards1 {
+        grid-template-columns: 1fr;
+    }
+}
