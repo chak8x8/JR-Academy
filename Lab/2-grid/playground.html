@@ -174,6 +174,75 @@
   }
   .selects { display: flex; gap: 12px; flex-wrap: wrap; }
   select { background:#0b1220; color:#e5e7eb; border:1px solid #334155; border-radius:8px; padding:6px 8px; }
+
+  /* ===== NEW: PSEUDO-CLASSES, PSEUDO-ELEMENTS & INTERACTIONS ===== */
+
+  .interactions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(240px, 1fr));
+    gap: var(--gap);
+  }
+
+  /* Hover demo (pseudo-class) */
+  .hover-card {
+    background:#0b1220; border:1px solid #1f2937; border-radius:12px;
+    padding:16px; display:grid; gap:12px;
+  }
+  .hover-button {
+    background:#22c55e; color:#031018;
+    border:none; border-radius:10px;
+    padding:10px 14px;
+    cursor:pointer;                            /* show a hand cursor */
+    transform: translateY(0);                  /* start position */
+    transition: transform 0.2s ease,           /* smooth movement */
+                background-color 0.2s ease;    /* smooth color change */
+  }
+  .hover-button:hover {                        /* :hover is a pseudo-class (state) */
+    transform: translateY(-4px);               /* move up a bit */
+    background:#16a34a;                        /* darker on hover */
+  }
+  .hover-note { color:#94a3b8; font-size:14px; }
+
+  /* ::before / ::after demo (pseudo-elements) */
+  .badge-card {
+    position:relative;
+    background:#0b1220; border:1px solid #1f2937; border-radius:12px;
+    padding:16px 16px 16px 54px;               /* leave space for the badge */
+  }
+  .badge-card::before {                        /* ::before creates a decorative box */
+    content:"NEW";                             /* required! pseudo-elements need content */
+    position:absolute; left:12px; top:12px;
+    background:#f59e0b; color:#111;
+    font-weight:700; font-size:12px;
+    padding:4px 8px; border-radius:999px;
+  }
+  .badge-card::after {                         /* you can add a second decorative box */
+    content:"★";                               /* small star on the right */
+    position:absolute; right:12px; top:12px;
+    color:#fca5a5; font-size:14px;
+  }
+  .badge-note { color:#94a3b8; font-size:14px; }
+
+  /* Cursor demo */
+  .cursors {
+    display:grid; grid-template-columns: repeat(2, minmax(160px, 1fr)); gap:12px;
+  }
+  .cursor-box {
+    background:#0b1220; border:1px dashed #334155; border-radius:10px;
+    padding:16px; text-align:center;
+  }
+  .cur-auto       { cursor:auto; }
+  .cur-pointer    { cursor:pointer; }
+  .cur-notallowed { cursor:not-allowed; }
+  .cur-grab       { cursor:grab; }
+
+  .cursor-box small { color:#94a3b8; display:block; margin-top:6px; }
+
+  /* Extra: focus-visible demo for keyboard users */
+  .hover-button:focus-visible {
+    outline: 2px solid #22d3ee;
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
@@ -305,6 +374,67 @@
     </details>
   </div>
 
+  <!-- NEW 3.5) Interactions & Effects -->
+  <div class="demo">
+    <h2>3.5) :hover (pseudo-class), ::before/::after (pseudo-elements), cursor, transition &amp; transform</h2>
+    <div class="interactions">
+      <!-- Hover -->
+      <div class="hover-card">
+        <div>
+          <button class="hover-button">Hover me</button>
+          <div class="hover-note">On <code>:hover</code>, we move the button up (<code>transform: translateY(-4px)</code>) and change its color. The <code>transition</code> makes it smooth.</div>
+        </div>
+        <details>
+          <summary>What is <code>:hover</code>? What is <code>&amp;:hover</code> in SCSS?</summary>
+          <div class="note">
+            <p><b>:hover</b> is a <i>pseudo-class</i> — a temporary state (“mouse is over this”).</p>
+            <p>In SCSS you often see:</p>
+            <pre><code>.button {
+  // SCSS nesting
+  &amp;:hover { transform: translateY(-4px); }
+}</code></pre>
+            <p>It compiles to plain CSS:</p>
+            <pre><code>.button:hover { transform: translateY(-4px); }</code></pre>
+            <p><b>Tip:</b> pair <code>:hover</code> effects with <code>transition</code> for smooth animations.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- ::before / ::after -->
+      <div class="badge-card">
+        This card uses <code>::before</code> to draw the yellow “NEW” pill
+        and <code>::after</code> to draw the star on the right.
+        <div class="badge-note">Pseudo-<b>elements</b> (<code>::before</code>/<code>::after</code>) create 2 extra decorative boxes. You must set <code>content:</code> (even if it’s just <code>""</code>).</div>
+      </div>
+
+      <!-- Cursor -->
+      <div>
+        <div class="cursors">
+          <div class="cursor-box cur-auto">auto<small>(default)</small></div>
+          <div class="cursor-box cur-pointer">pointer<small>(hand)</small></div>
+          <div class="cursor-box cur-notallowed">not-allowed<small>(nope)</small></div>
+          <div class="cursor-box cur-grab">grab<small>(draggable)</small></div>
+        </div>
+        <details>
+          <summary>What does <code>cursor: pointer</code> do?</summary>
+          <div class="note">
+            <p>It changes the mouse cursor to a hand shape to tell users “this is clickable”. It does not make things clickable by itself — you still need a link (<code>&lt;a&gt;</code>) or JS on a button/div.</p>
+          </div>
+        </details>
+        <details>
+          <summary>What do <code>transition</code> and <code>transform</code> do?</summary>
+          <div class="note">
+            <ul>
+              <li><b>transform</b> moves/scales/rotates the element (e.g., <code>translateY(-4px)</code>).</li>
+              <li><b>transition</b> animates the change smoothly: <code>transition: transform 0.2s ease;</code></li>
+              <li>Good pattern: animate <i>specific</i> properties (<code>transform</code>, <code>opacity</code>) instead of <code>all</code> for better performance.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
   <!-- 4) Grid lines: start at column 2, span 12 -->
   <div class="demo">
     <h2>4) Grid lines — “Start at column 2, span 12”</h2>
@@ -326,6 +456,7 @@
       <li><strong>1fr gutters</strong> share leftover space; two gutters → each gets half.</li>
       <li><strong>Why 12?</strong> Easy divisors (2,3,4,6) → flexible rows.</li>
       <li><strong>grid-column: 2 / span 12</strong> means “start at line 2 and occupy 12 columns”.</li>
+      <li><strong>:hover</strong> is a state; <strong>::before/::after</strong> are decorative boxes; <strong>cursor</strong> changes mouse pointer; <strong>transition + transform</strong> animate motion smoothly.</li>
     </ul>
   </div>
 

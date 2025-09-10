@@ -25,7 +25,7 @@ main {
 .card {
   grid-column-end: span 4;
   cursor: pointer;
-  transition: all 0.3 ease;
+  transition: all 0.3s ease;
 }
 .card:hover {
   transform: translateY(-8px);

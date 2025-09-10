@@ -54,9 +54,7 @@ main {
     grid-column-end: span 4;
 
     cursor: pointer;
-    transition: all 0.3 ease; // (teacher) Missing "s" → animation won't run
-    // 👉 Alternative (fix):
-    // transition: all 0.3s ease;
+    transition: all 0.3s ease;
 
     &:hover {
         transform: translateY(-8px); // lift card on hover
