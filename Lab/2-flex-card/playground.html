@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flex Card Playground</title>
+
+<!-- Load the same font you used -->
+<style>
+  /* Loads the Google Font "Roboto" */
+  @import url("https://fonts.googleapis.com/css?family=Roboto");
+
+  /* ===== Page chrome (just to make the playground nice) ===== */
+  :root {
+    --bg: #0f172a;        /* dark background */
+    --panel: #111827;     /* panel background */
+    --ink: #e5e7eb;       /* light text */
+    --muted: #9ca3af;     /* muted text */
+    --accent: #4181ee;    /* your h1 color */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Roboto", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  header {
+    padding: 24px 16px 8px;
+  }
+  h1 {
+    margin: 0 0 8px;
+    color: var(--accent);
+
+    /* From your CSS: center the heading horizontally using Flexbox */
+    display: flex;               /* make the h1 act like a flex container */
+    justify-content: center;     /* center its inline content */
+  }
+  .subtitle {
+    text-align: center; color: var(--muted); margin-bottom: 8px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px;
+  }
+  details { margin: 8px 0; }
+  summary { cursor: pointer; color: #a5b4fc; }
+
+  /* ===== Your Flex Cards (kept, with comments) ===== */
+
+  /* Wrap everything so we can debug easily */
+  .playground-block {
+    display: grid;
+    gap: 16px;
+  }
+
+  /* Your original .container */
+  .container {
+    /* From your code: center the wrapper box horizontally */
+    display: flex;               /* flex puts children in a row by default */
+    justify-content: center;     /* center horizontally */
+
+    /* Playground toggles */
+    border: 1px dashed transparent;
+  }
+  .show-outlines .container {
+    border-color: #334155;
+  }
+
+  .wrapper {
+    /* From your code: this holds the cards side-by-side and wraps to a new line */
+    display: flex;               /* lay out .card elements in a row */
+    flex-wrap: wrap;             /* allow them to wrap onto multiple lines */
+
+    /* Playground toggles */
+    gap: 0; /* we’re using margins on cards instead of gap (to match your code) */
+    border: 1px dashed transparent;
+    padding: 4px;
+  }
+  .show-outlines .wrapper {
+    border-color: #475569;
+  }
+
+  .card {
+    /* width/height box */
+    max-width: 300px;            /* limit how wide a card can be */
+    min-height: 250px;           /* make sure it’s not too short */
+
+    /* colors + box model */
+    background-color: aquamarine;
+    color: #fff;
+    padding: 30px;               /* inside spacing */
+    border-radius: 3px;          /* rounded corners */
+    margin: 20px;                /* space outside each card */
+
+    /* IMPORTANT: include padding & border inside width/height */
+    /* Your page already set box-sizing globally, but here’s the meaning: */
+    box-sizing: border-box;
+
+    /* shadow */
+    box-shadow:
+      rgb(50 50 93 / 25%) 0px 30px 60px -12px,
+      rgb(0 0 0 / 30%) 0px 18px 36px -18px;
+
+    /* hover effect (moving up a bit) */
+    transition: transform 0.2s ease; /* smooth animation for transform only */
+  }
+
+  .card:hover {
+    transform: translateY(-8px); /* move up by 8px when mouse hovers */
+  }
+
+  .card_image img {
+    width: 100%;                 /* image fits the card’s content width */
+    display: block;              /* remove inline-gap under images */
+    /* Optional improvement (kept commented so you can try later):
+       Make all image tiles the same shape.
+       aspect-ratio: 16 / 9;
+       height: auto;
+       object-fit: cover;
+       border-radius: 8px;
+    */
+  }
+
+  /* You used nth-child / last-child to color specific cards */
+  .card:nth-child(2) {
+    background-color: #4181ee;
+  }
+  .card:last-child {
+    background-color: #673ab7;
+  }
+
+  .card_content {
+    margin: 12px 0 16px;
+  }
+
+  .card_info {
+    /* From your code: layout the time + button on one line */
+    display: flex;               /* put children in a row */
+    justify-content: space-between; /* push them to far edges */
+    align-items: center;         /* align vertically in the center */
+  }
+
+  .card_price {
+    background-color: #555;
+    color: #fff;
+    border: none;                /* remove default button border */
+    border-radius: 20px;         /* pill shape */
+    padding: 5px 20px;           /* inner spacing */
+    cursor: pointer;             /* pointer cursor on hover */
+  }
+
+  /* ===== Playground helpers (toggles to see differences) ===== */
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+    margin: 0 16px;
+  }
+  .controls label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 14px;
+    color: var(--muted);
+    user-select: none;
+  }
+
+  /* Toggle: turn off flex to show “block” stacking */
+  .block-container .container { display: block; }
+  .block-container .wrapper { display: block; }
+  .block-container .card { margin: 16px auto; }
+
+  /* Toggle: make .wrapper a grid instead of flex (for comparison) */
+  .grid-wrapper .wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px; /* grid gap replaces margins on cards visually */
+  }
+  .grid-wrapper .card { margin: 0; }
+
+  /* Make things responsive without changing your original card CSS */
+  @media (max-width: 700px) {
+    .subtitle { padding: 0 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Responsive Cards (Flex)</h1>
+  <p class="subtitle">Your original layout, with simple, plain-English explanations and a few toggles to “see” what each thing does.</p>
+
+  <div class="panel controls">
+    <label><input type="checkbox" id="outlineToggle"> Show outlines (debug)</label>
+    <label><input type="checkbox" id="blockToggle"> Force <code>display: block</code> (no flex)</label>
+    <label><input type="checkbox" id="gridToggle"> Make wrapper use <code>display: grid</code> (compare)</label>
+  </div>
+</header>
+
+<main class="playground-block" id="playground">
+  <section class="panel">
+    <h2 style="margin:0 0 8px;">Live Cards</h2>
+    <div class="container">
+      <div class="wrapper">
+        <div class="card">
+          <div class="card_image">
+            <img src="https://images.wallpapershq.com/wallpapers/2537/wallpaper_2537_1920x1080.jpg" alt="">
+          </div>
+          <div class="card_content">
+            Here's the title of an awesome course.
+          </div>
+          <div class="card_info">
+            <p class="text">30 mins</p>
+            <button class="card_price">Free</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card_image">
+            <img src="https://images.hdqwalls.com/wallpapers/landscape-outdoor-mountains-galaxy-4k-u3.jpg" alt="">
+          </div>
+          <div class="card_content">
+            Here's the title of an awesome course.
+          </div>
+          <div class="card_info">
+            <p class="text">30 mins</p>
+            <button class="card_price">Free</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card_image">
+            <img src="https://images.unsplash.com/photo-1473283147055-e39c51463929?fm=jpg&q=60&w=3000" alt="">
+          </div>
+          <div class="card_content">
+            Here's the title of an awesome course.
+          </div>
+          <div class="card_info">
+            <p class="text">30 mins</p>
+            <button class="card_price">Free</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card_image">
+            <img src="https://wallpapers.com/images/high/1920x1080-winter-background-1920-x-1080-mg54xa5r950vs5y0.webp" alt="">
+          </div>
+          <div class="card_content">
+            Here's the title of an awesome course.
+          </div>
+          <div class="card_info">
+            <p class="text">30 mins</p>
+            <button class="card_price">Free</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 style="margin:0 0 8px;">Explain: every CSS thing you used</h2>
+
+    <details open>
+      <summary><code>@import url(...)</code> — load a web font</summary>
+      <p>Downloads the <b>Roboto</b> font from Google so your text uses that font instead of the browser’s default.</p>
+    </details>
+
+    <details>
+      <summary><code>body { font-family: "Roboto", sans-serif; }</code></summary>
+      <p>Sets the default font for the whole page. Everything inside the body inherits this font unless overridden.</p>
+    </details>
+
+    <details>
+      <summary><code>h1 { color; display: flex; justify-content: center; }</code></summary>
+      <ul>
+        <li><b>color</b> — the text color for the heading.</li>
+        <li><b>display: flex</b> — makes the h1 act like a flex container for its inline content.</li>
+        <li><b>justify-content: center</b> — centers that content horizontally.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary><code>.container { display: flex; justify-content: center; }</code></summary>
+      <p>Makes the container a flexbox and <b>centers</b> the inner <code>.wrapper</code> horizontally.</p>
+    </details>
+
+    <details>
+      <summary><code>.wrapper { display: flex; flex-wrap: wrap; }</code></summary>
+      <ul>
+        <li><b>display: flex</b> — puts the cards in a row.</li>
+        <li><b>flex-wrap: wrap</b> — if there isn’t enough space in the row, cards flow down to the next line.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary><code>.card</code> box styles</summary>
+      <ul>
+        <li><b>max-width: 300px</b> — don’t let cards get wider than 300px.</li>
+        <li><b>min-height: 250px</b> — keep cards at least 250px tall.</li>
+        <li><b>background-color</b> — card color (you change it on cards 2 and 4).</li>
+        <li><b>box-sizing: border-box</b> — width/height include padding &amp; border (easier sizing).</li>
+        <li><b>padding</b> — inner space inside the card.</li>
+        <li><b>border-radius</b> — rounded corners.</li>
+        <li><b>margin</b> — space around the outside of the card.</li>
+        <li><b>box-shadow</b> — drop shadow for depth.</li>
+        <li><b>transition</b> + <b>transform: translateY(-8px)</b> on <code>.card:hover</code> — smooth “lift up” effect.</li>
+      </ul>
+      <p><b>Tip:</b> Your original had <code>transition: all 0.3 ease;</code> — it needs seconds: <code>0.3s</code>.</p>
+    </details>
+
+    <details>
+      <summary><code>.card_image img { width: 100%; }</code></summary>
+      <p>Makes the image fill the card’s content width. If images have different shapes, you can add:</p>
+      <pre style="white-space:pre-wrap;background:#0b1220;padding:8px;border-radius:8px;"><code>.card_image img {
+  width: 100%;
+  height: 180px;       /* pick a height */
+  object-fit: cover;   /* crop nicely */
+  border-radius: 8px;
+}</code></pre>
+      <p>Or use <code>aspect-ratio: 16 / 9;</code> on a wrapper to keep all tiles the same shape.</p>
+    </details>
+
+    <details>
+      <summary><code>.card:nth-child(2)</code> and <code>.card:last-child</code></summary>
+      <p>These are <b>structural selectors</b>:</p>
+      <ul>
+        <li><b>:nth-child(2)</b> → selects the 2nd card.</li>
+        <li><b>:last-child</b> → selects the last card.</li>
+      </ul>
+      <p>You used them to change background colors of those specific cards.</p>
+    </details>
+
+    <details>
+      <summary><code>.card_info { display:flex; justify-content: space-between; align-items: center; }</code></summary>
+      <p>Places the time text on the left and the button on the right, on the same line, vertically centered.</p>
+    </details>
+
+    <details>
+      <summary><code>.card_price</code> button styles</summary>
+      <ul>
+        <li><b>background-color</b>, <b>color</b> — button colors.</li>
+        <li><b>border: none</b> — remove the default border.</li>
+        <li><b>border-radius: 20px</b> — pill-shaped button.</li>
+        <li><b>padding: 5px 20px</b> — inner space.</li>
+        <li><b>cursor: pointer</b> — shows hand cursor on hover.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>When would I use <code>grid</code> instead of <code>flex</code>?</summary>
+      <p><b>Flex</b> is best for one direction (a row OR a column). <b>Grid</b> is best when you need control over both rows AND columns (a 2D layout). Try the “Make wrapper use grid” toggle above to compare.</p>
+    </details>
+  </section>
+</main>
+
+<script>
+  // Simple toggles so you can see differences
+  const playground = document.getElementById('playground');
+  const outlineToggle = document.getElementById('outlineToggle');
+  const blockToggle = document.getElementById('blockToggle');
+  const gridToggle = document.getElementById('gridToggle');
+
+  outlineToggle.addEventListener('change', e => {
+    document.body.classList.toggle('show-outlines', e.target.checked);
+  });
+  blockToggle.addEventListener('change', e => {
+    playground.classList.toggle('block-container', e.target.checked);
+    if (e.target.checked) {
+      gridToggle.checked = false;
+      playground.classList.remove('grid-wrapper');
+    }
+  });
+  gridToggle.addEventListener('change', e => {
+    playground.classList.toggle('grid-wrapper', e.target.checked);
+    if (e.target.checked) {
+      blockToggle.checked = false;
+      playground.classList.remove('block-container');
+    }
+  });
+</script>
+
+</body>
+</html>
