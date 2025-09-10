@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Grid Playground — Visual Demos</title>
+<style>
+  :root {
+    --gap: 16px;
+    --bg: #0f172a;         /* slate-900 */
+    --paper: #111827;      /* gray-900 */
+    --ink: #e5e7eb;        /* gray-200 */
+    --soft: #334155;       /* slate-700 */
+    --accent: #22d3ee;     /* cyan-400 */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    padding: 24px;
+  }
+  h1,h2 { margin: 0 0 12px; }
+  .demo {
+    background: var(--paper);
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 0 0 24px;
+  }
+  .note { color: #94a3b8; font-size: 14px; margin: 6px 0 0; }
+  .row-title { margin: 8px 0; font-weight: 600; }
+
+  /* Shared box styles for layout demos */
+  .boxes { gap: var(--gap); }
+  .box {
+    background: #0ea5e9;          /* blue-500 */
+    color: #031018;
+    border-radius: 8px;
+    padding: 12px;
+    min-width: 120px;
+    min-height: 60px;
+    display: grid; place-items: center;
+    font-weight: 700;
+  }
+
+  /* 1) Semantics: main/section vs div (both look the same) */
+  .semantic, .divonly {
+    display: grid; gap: var(--gap);
+    grid-template-columns: 1fr 1fr;
+  }
+  .semantic > main, .divonly > .div-main {
+    background: #0b1220; border: 1px dashed #334155; border-radius: 10px; padding: 12px;
+  }
+  .semantic main > section, .divonly .div-section {
+    background: #0e1729; border: 1px dashed #3b495f; border-radius: 8px; padding: 12px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap);
+  }
+
+  /* 2) display differences */
+  .display-demos { display: grid; gap: var(--gap); }
+  .panel { background:#0b1220; border-radius: 10px; padding:12px; }
+  .panel h3 { margin:0 0 10px; font-size: 15px; color:#a5b4fc; }
+  .block .boxes .box { width: 100%; }        /* block elements fill the row */
+  .block .boxes .box + .box { margin-top: 8px; }
+  .inline-block .boxes .box { display:inline-block; }
+  .inline-block .boxes { white-space: normal; }
+  .flex .boxes { display: flex; flex-wrap: wrap; gap: var(--gap); }
+  .grid .boxes { display: grid; gap: var(--gap); grid-template-columns: repeat(3, 1fr); }
+
+  /* 3) 12-column grid with flexible gutters */
+  .frame12 {
+    display: grid;
+    /* 1 flexible gutter | 12 content cols | 1 flexible gutter */
+    grid-template-columns: 1fr repeat(12, minmax(0, 60px)) 1fr;
+    gap: var(--gap);
+    padding: 8px 0 16px;
+    position: relative;
+  }
+  /* Just to help you see gutters */
+  .frame12::before,
+  .frame12::after {
+    content: "gutter (1fr)";
+    position: sticky; top: 8px;
+    padding: 6px 8px;
+    background: #0b1220; border: 1px dashed #334155; border-radius: 6px;
+    color: #93c5fd; font-size: 12px; text-align: center;
+    height: 24px; align-self: start; display: grid; place-items: center;
+  }
+  .frame12::before { grid-column: 1; }
+  .frame12::after  { grid-column: -2; }
+
+  .content12 {
+    grid-column: 2 / span 12; /* start at column 2 (after left gutter), take 12 cols */
+    display: grid; gap: var(--gap);
+    grid-template-columns: repeat(12, minmax(0, 60px));
+  }
+  .card { grid-column: span 4; } /* 12 / 4 = 3 per row */
+  .card .img {
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    overflow: hidden;
+    outline: 1px solid #1f2937;
+  }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* 4) 14-column version (to feel the difference) */
+  .frame14 {
+    display: grid;
+    grid-template-columns: 1fr repeat(14, minmax(0, 60px)) 1fr;
+    gap: var(--gap);
+    padding: 8px 0 16px;
+  }
+  .frame14::before, .frame14::after {
+    content: "gutter (1fr)";
+    position: sticky; top: 8px;
+    padding: 6px 8px;
+    background: #0b1220; border: 1px dashed #334155; border-radius: 6px;
+    color: #fca5a5; font-size: 12px; text-align: center;
+    height: 24px; align-self: start; display: grid; place-items: center;
+  }
+  .frame14::before { grid-column: 1; }
+  .frame14::after  { grid-column: -2; }
+
+  .content14 {
+    grid-column: 2 / span 14; /* now we take all 14 content columns */
+    display: grid; gap: var(--gap);
+    grid-template-columns: repeat(14, minmax(0, 60px));
+  }
+  .card14 { grid-column: span 7; } /* 14 / 7 = 2 per row (not as flexible as 12) */
+  .card14 .img {
+    aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; outline: 1px solid #1f2937;
+  }
+
+  /* 5) “Start at column 2, span 12” — line-based placement */
+  .lines {
+    display: grid;
+    grid-template-columns: repeat(14, 40px); /* fixed small tracks so you can see lines */
+    gap: 6px;
+    padding: 6px;
+    background: #0b1220; border-radius: 10px;
+  }
+  .lines > div {
+    background: #1e293b; border: 1px dashed #334155; color: #a7f3d0;
+    padding: 8px; border-radius: 6px; font-size: 13px;
+  }
+  .full { grid-column: 1 / -1; }            /* from line 1 to the last line */
+  .center12 { grid-column: 2 / span 12; }   /* start at line 2, take 12 columns */
+  .left1 { grid-column: 1 / span 1; }       /* just the first column */
+</style>
+</head>
+<body>
+
+  <h1>CSS & SCSS Concepts — Visual Playground</h1>
+
+  <!-- 1) Semantics -->
+  <div class="demo">
+    <h2>1) Semantic tags vs plain div</h2>
+    <div class="note">They look the same. The difference is meaning (accessibility & SEO), not visuals.</div>
+    <div class="semantic" style="margin-top:12px">
+      <!-- Using semantic tags -->
+      <main>
+        <h3 class="row-title">Using &lt;main&gt; + &lt;section&gt;</h3>
+        <section>
+          <div class="box">A</div>
+          <div class="box">B</div>
+          <div class="box">C</div>
+        </section>
+      </main>
+      <!-- Using only divs -->
+      <div class="div-main">
+        <h3 class="row-title">Using only &lt;div&gt;</h3>
+        <div class="div-section">
+          <div class="box">A</div>
+          <div class="box">B</div>
+          <div class="box">C</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">So, why use &lt;main&gt;/&lt;section&gt;? Screen readers can jump to “main” quickly; search engines understand your structure better.</p>
+  </div>
+
+  <!-- 2) Display differences -->
+  <div class="demo">
+    <h2>2) display: block vs inline-block vs flex vs grid</h2>
+    <div class="display-demos">
+      <div class="panel block">
+        <h3>display: block (default for div)</h3>
+        <div class="boxes">
+          <div class="box">1</div>
+          <div class="box">2</div>
+          <div class="box">3</div>
+        </div>
+        <div class="note">Blocks stack vertically, each fills the full row width.</div>
+      </div>
+      <div class="panel inline-block">
+        <h3>display: inline-block</h3>
+        <div class="boxes">
+          <div class="box">1</div>
+          <div class="box">2</div>
+          <div class="box">3</div>
+        </div>
+        <div class="note">Inline-blocks sit next to each other if there’s room; they keep their box size.</div>
+      </div>
+      <div class="panel flex">
+        <h3>display: flex</h3>
+        <div class="boxes">
+          <div class="box">1</div>
+          <div class="box">2</div>
+          <div class="box">3</div>
+        </div>
+        <div class="note">Flex is great for rows/columns of items that wrap, space, and align easily.</div>
+      </div>
+      <div class="panel grid">
+        <h3>display: grid</h3>
+        <div class="boxes">
+          <div class="box">1</div>
+          <div class="box">2</div>
+          <div class="box">3</div>
+        </div>
+        <div class="note">Grid makes real columns and rows — perfect for two-dimensional layouts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3) 12-col grid with gutters -->
+  <div class="demo">
+    <h2>3) Grid with gutters + 12 columns (common in design)</h2>
+    <div class="note">Template: <code>1fr repeat(12, minmax(0,60px)) 1fr</code> → left/right flexible gutters + 12 content columns.</div>
+    <div class="frame12">
+      <div class="content12">
+        <!-- 3 on the first row, 1 on the second row -->
+        <div class="card">
+          <div class="img">
+            <img src="https://images.wallpapershq.com/wallpapers/2537/wallpaper_2537_1920x1080.jpg" alt="">
+          </div>
+        </div>
+        <div class="card">
+          <div class="img">
+            <img src="https://images.hdqwalls.com/wallpapers/landscape-outdoor-mountains-galaxy-4k-u3.jpg" alt="">
+          </div>
+        </div>
+        <div class="card">
+          <div class="img">
+            <img src="https://images.unsplash.com/photo-1473283147055-e39c51463929?fm=jpg&q=60&w=3000" alt="">
+          </div>
+        </div>
+        <div class="card">
+          <div class="img">
+            <img src="https://wallpapers.com/images/high/1920x1080-winter-background-1920-x-1080-mg54xa5r950vs5y0.webp" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      Why 12? It divides nicely: 12÷2=6, 12÷3=4, 12÷4=3, 12÷6=2 → very flexible for 1/2/3/4/6 items per row.
+      The left/right <code>1fr</code> “gutters” share leftover space equally (each gets half).
+    </p>
+  </div>
+
+  <!-- 4) 14-col version -->
+  <div class="demo">
+    <h2>4) 14 columns — to compare</h2>
+    <div class="note">Template: <code>1fr repeat(14, minmax(0,60px)) 1fr</code>. Here each card spans 7 → 2 per row.</div>
+    <div class="frame14">
+      <div class="content14">
+        <div class="card14"><div class="img"><img src="https://images.wallpapershq.com/wallpapers/2537/wallpaper_2537_1920x1080.jpg" alt=""></div></div>
+        <div class="card14"><div class="img"><img src="https://images.hdqwalls.com/wallpapers/landscape-outdoor-mountains-galaxy-4k-u3.jpg" alt=""></div></div>
+        <div class="card14"><div class="img"><img src="https://images.unsplash.com/photo-1473283147055-e39c51463929?fm=jpg&q=60&w=3000" alt=""></div></div>
+        <div class="card14"><div class="img"><img src="https://wallpapers.com/images/high/1920x1080-winter-background-1920-x-1080-mg54xa5r950vs5y0.webp" alt=""></div></div>
+      </div>
+    </div>
+    <p class="note">14 works, but 12 usually feels nicer because of its many divisors.</p>
+  </div>
+
+  <!-- 5) Grid lines: start at column 2, take 12 -->
+  <div class="demo">
+    <h2>5) Grid lines — “Start at column 2, span 12”</h2>
+    <div class="note">Think of vertical lines numbered left→right. You can say: start at line 2, take 12 columns.</div>
+    <div class="lines">
+      <div class="full">grid-column: 1 / -1 (full width)</div>
+      <div class="center12">grid-column: 2 / span 12 (start at line 2, take 12)</div>
+      <div class="left1">grid-column: 1 / span 1 (just the first column)</div>
+    </div>
+  </div>
+
+  <div class="demo">
+    <h2>Summary (plain English)</h2>
+    <ul>
+      <li><strong>&lt;main&gt;</strong> = the main story. <strong>&lt;section&gt;</strong> = a chapter. <strong>&lt;div&gt;</strong> = plain box.</li>
+      <li>Using semantic tags doesn’t change visuals, but helps screen readers and SEO.</li>
+      <li><strong>display</strong>: <em>block</em> (stack), <em>inline-block</em> (sit side-by-side), <em>flex</em> (1D rows/cols), <em>grid</em> (2D rows+cols).</li>
+      <li><strong>grid-template-columns</strong> defines the columns. <code>repeat(12, minmax(0,60px))</code> = 12 columns that can grow up to 60px.</li>
+      <li><strong>1fr gutters</strong> on the sides share free space. 2 gutters → each gets half.</li>
+      <li><strong>Why 12?</strong> Easy math for 1/2/3/4/6 items per row. 14 is ok, just less handy.</li>
+      <li><strong>grid-column: 2 / span 12</strong> = start at vertical line #2 and take 12 columns (centers your content inside the outer frame).</li>
+    </ul>
+  </div>
+
+</body>
+</html>
