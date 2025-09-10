@@ -333,4 +333,37 @@
   // Simple toggles for the sandbox
   const frame = document.getElementById('frame');
   const content = document.getElementById('content');
-  const c
+  const colCount = document.getElementById('colCount');
+  const spanSel = document.getElementById('spanSel');
+  const guttersToggle = document.getElementById('guttersToggle');
+  const autoMinToggle = document.getElementById('autoMinToggle');
+  const outlineToggle = document.getElementById('outlineToggle');
+
+  function applyState() {
+    // Columns: 12 or 14
+    frame.classList.remove('cols-12', 'cols-14');
+    frame.classList.add(colCount.value === '14' ? 'cols-14' : 'cols-12');
+
+    // Gutters on/off
+    frame.classList.toggle('gutters-on',  guttersToggle.checked);
+    frame.classList.toggle('gutters-off', !guttersToggle.checked);
+
+    // Use minmax(auto,60px) vs minmax(0,60px)
+    document.body.classList.toggle('use-auto', autoMinToggle.checked);
+
+    // Card span
+    content.classList.remove('span-4', 'span-6', 'span-12');
+    content.classList.add(spanSel.value);
+
+    // Outlines
+    document.body.classList.toggle('show-outlines', outlineToggle.checked);
+  }
+
+  [colCount, spanSel, guttersToggle, autoMinToggle, outlineToggle].forEach(el => {
+    el.addEventListener('change', applyState);
+  });
+  applyState();
+</script>
+
+</body>
+</html>
