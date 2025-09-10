@@ -114,9 +114,8 @@ main {
         // gap: $extra-small-spacing;
 
         .card {
-            // TEACHER ORIGINAL BELOW (likely a mistake):
-            // You're setting grid-template-columns on ".card",
-            // but ".card" is an item, not the grid container for all cards.
+            // TEACHER ORIGINAL BELOW:
+            // You're setting grid-template-columns on ".cards",
             // grid-template-columns: $extra-small-spacing repeat(6, 1fr) $extra-small-spacing;
 
             .cards {
