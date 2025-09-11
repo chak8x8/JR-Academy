@@ -1,152 +1,216 @@
-// ================================
-// VARIABLES (teacher: SCSS basics)
-// ================================
+// =======================================================
+// Teacher code (unchanged) + my comments & suggestions
+// =======================================================
+
+// --------------------
+// 1) Variables (SCSS)
+// --------------------
+// Reusable values. Changing them here updates all places that use them.
+// This is a simple spacing scale you can tweak for the whole layout.
 $spacing-unit: 40px;
 $small-spacing: 20px;
 $extra-small-spacing: 10px;
 
+// ---------------------
+// 2) Global box model
+// ---------------------
+// Reset default margins/padding so layouts are predictable.
+// box-sizing: border-box keeps padding/border inside the declared width/height.
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
+// ---------------------
+// 3) Page background
+// ---------------------
 body {
-    background-color: #303032; // page background
-    // 👉 Alternative (optional usability):
-    // color: white;
-    // font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background-color: #303032;
+
+    // 💡 Suggestion: add base text color & font for readability across the page.
+    // color: #f5f5f5;
+    // font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
+// ---------------------------------------------------
+// 4) Outer grid “frame” (gutters + content columns)
+// ---------------------------------------------------
+// main becomes a grid that defines the *page frame*:
+// [ left gutter | 12 content columns | right gutter ]
 main {
-    // TEACHER IDEA: outer grid frame with gutters + a 12-col content area
     display: grid;
 
-    // TEACHER ORIGINAL:
-    grid-template-columns: 1fr repeat(12, minmax(auto, 60px)) 1fr;
-    // 👉 Alternative (more robust min size, same idea):
+    // “1fr ... 1fr” = flexible left/right gutters that share leftover space.
+    // “repeat(12, minmax(auto, 60px))” = 12 columns; each grows up to 60px wide.
+    // Heads-up: 'auto' as the minimum can sometimes refuse to shrink if content is long.
+    grid-template-columns: 1fr repeat(12,minmax(auto, 60px)) 1fr;
+
+    // 💡 Safer alternative (prevents overflow when content is long):
     // grid-template-columns: 1fr repeat(12, minmax(0, 60px)) 1fr;
 
-    grid-gap: $spacing-unit; // legacy name still fine
+    // “grid-gap” is the older name for “gap”. Works fine; “gap” is the modern equivalent.
+    grid-gap: $spacing-unit;
     padding: $spacing-unit 0;
-    // 👉 Alternative (modern name):
+
+    // Modern equivalent:
     // gap: $spacing-unit;
 }
 
+// --------------------------------------
+// 5) The inner grid that holds the cards
+// --------------------------------------
+// This grid sits *inside* the main grid and gets placed into its content area.
 .cards {
-    // start on column 2 and span 12 columns (skip left gutter, use the content area)
+    // Place the inner grid on the outer grid:
+    // start at column 2 (skip left gutter) and span 12 (the content columns).
+    // NOTE: This only works if .cards is actually a grid item inside <main>.
     grid-column: 2 / span 12;
 
     display: grid;
 
-    // TEACHER ORIGINAL:
-    grid-template-columns: repeat(12, minmax(auto, 60px));
-    // 👉 Alternative (safer min):
+    // 12 inner columns for card layout.
+    // Again, 'auto' min can resist shrinking; see safer alternative below.
+    grid-template-columns: repeat(12,minmax(auto,60px));
+
+    // 💡 Safer alternative:
     // grid-template-columns: repeat(12, minmax(0, 60px));
 
     grid-gap: $spacing-unit;
-    // 👉 Alternative:
+    // Modern:
     // gap: $spacing-unit;
+
+    // 🧪 Debug tip (temporary): visualize the grid bounds
+    // outline: 2px dashed hotpink;
 }
 
+// ------------------------------
+// 6) A single “card” (grid item)
+// ------------------------------
 .card {
-    // span 4 columns → 12 / 4 = 3 cards per row (on large screens)
+    // Each card takes 4 columns → 12 / 4 = 3 cards per row (on wide screens).
+    // (If you see one per row, check that your .card elements are NOT nested inside each other.)
     grid-column-end: span 4;
 
+    // UX hint: show hand cursor to imply clickability.
     cursor: pointer;
-    transition: all 0.3s ease;
 
+    // Smooth animation for changes (hover below).
+    // ⚠️ Teacher typo: missing “s” after 0.3 → animation won’t run.
+    transition: all 0.3 ease;
+
+    // ✅ Suggestion (fix the units & keep it efficient):
+    // transition: transform 0.3s ease; // animate only what changes (transform)
+
+    // Hover state: lift the card up.
     &:hover {
-        transform: translateY(-8px); // lift card on hover
+        transform: translateY(-8px);
     }
 
+    // BEM element: an inner wrapper just for the image.
     &__image-container {
-        width: 100%;
+        width:100%;
 
-        // TEACHER ORIGINAL: sets only width; heights vary by source image
         img {
-            width: 100%;
-        }
+            width:100% // (semicolon optional at end in SCSS)
 
-        // 👉 Alternative (makes all visible tiles same shape):
-        // aspect-ratio: 16 / 9;
+            // 💡 Suggestion: make all image tiles the same *visual* shape
+            // by controlling the container’s shape and letting the image crop nicely.
+            // (Uncomment the whole block below to try.)
+            //
+            // display: block;        // removes tiny baseline gap under inline images
+            // height: 100%;
+            // object-fit: cover;     // fill the box, crop edges if needed
+        }
+        // Or control shape on the container instead of the <img>:
+        // aspect-ratio: 16/9;
         // overflow: hidden;
         // border-radius: 12px;
-        // img {
-        //   width: 100%;
-        //   height: 100%;
-        //   object-fit: cover; // crop nicely to fill the box
-        //   display: block;
-        // }
+        // img { width: 100%; height: 100%; object-fit: cover; display: block; }
     }
 }
 
-@media screen and (max-width: 1000px) {
+// ---------------------------------------------------
+// 7) Breakpoint @ 1000px (tablet-ish)
+// ---------------------------------------------------
+// Make cards span 6 columns → 12 / 6 = 2 per row.
+@media screen and (max-width:1000px) {
     .card {
-        // 2 cards per row (12 / 6)
         grid-column-end: span 6;
     }
 }
 
-@media screen and (max-width: 700px) {
+// ---------------------------------------------------
+// 8) Breakpoint @ 700px (mobile-ish)
+// ---------------------------------------------------
+// Tighter gaps and 1 card per row (span all 12).
+@media screen and (max-width:700px) {
     main {
-        grid-gap: $small-spacing; // tighten gaps
-        // 👉 Alternative:
+        grid-gap: $small-spacing;
+
+        // Modern:
         // gap: $small-spacing;
 
         .card {
-            // 1 card per row (12 / 12)
             grid-column-end: span 12;
         }
     }
 
-    // 👉 Alternative (flatter, equivalent):
+    // 🧼 Simpler (flatter) equivalent:
     // .card { grid-column-end: span 12; }
     // main { gap: $small-spacing; }
 }
 
-@media screen and (max-width: 500px) {
+// ---------------------------------------------------
+// 9) Breakpoint @ 500px (small phones)
+// ---------------------------------------------------
+// Here the teacher redefines the *outer* frame to 6 columns with tiny fixed gutters.
+@media screen and (max-width:500px) {
     main {
-        grid-gap: $extra-small-spacing; // even tighter gaps
-        // 👉 Alternative:
-        // gap: $extra-small-spacing;
+        grid-gap: $extra-small-spacing;
 
-        .card {
-            // TEACHER ORIGINAL BELOW:
-            // You're setting grid-template-columns on ".cards",
-            // grid-template-columns: $extra-small-spacing repeat(6, 1fr) $extra-small-spacing;
+        // Replace the big frame with: [10px gutter | 6 cols | 10px gutter]
+        // i.e., fixed side gutters, 6 flexible content columns inside <main>.
+        grid-template-columns: $extra-small-spacing repeat(6,1fr) $extra-small-spacing;
 
-            .cards {
-                // TEACHER ORIGINAL (structure reversed — .cards nested inside .card)
-                // These probably won't apply as intended.
-                grid-column: 2 / span 6;
-                grid-template-columns: repeat(6, 1fr);
-                .card {
-                    grid-column-end: span 6;
-                }
+        // ⚠️ Note: $extra-small-spacing = 10px. That’s a *track*, not padding.
+        // It behaves like a real (very thin) column. If you expected “content padding”,
+        // use main { padding: 0 $extra-small-spacing; } instead of extra tracks.
+
+        .cards {
+            // Place .cards to start at outer line 2 and span 6 (the whole content area).
+            grid-column: 2 / span 6;
+
+            // Make the inner content grid 6 columns as well.
+            grid-template-columns: repeat(6,1fr);
+
+            .card {
+                // Each card spans 6 → 1 per row (full width of the 6-col inner grid),
+                // BUT because each inner track is 1fr, you can switch to span 3 to get 2 per row.
+                grid-column-end: span 6;
             }
         }
     }
 
-    // 👉 Alternative A (very small phones: still 1 per row, just smaller gaps):
+    // 💡 Alternative A (simpler tiny-screen rule of thumb):
+    // - Keep the outer frame alone; just reduce gaps and show 1 card per row.
+    // main { gap: $extra-small-spacing; }
     // .card { grid-column-end: span 12; }
 
-    // 👉 Alternative B (very small phones: 2 per row using a 6-col inner grid):
-    // .cards {
-    //   grid-column: 2 / span 12;
-    //   grid-template-columns: repeat(6, 1fr);
-    // }
-    // .card { grid-column-end: span 6; }
+    // 💡 Alternative B (2 per row on tiny screens with a small grid):
+    // .cards { grid-template-columns: repeat(6, 1fr); }
+    // .card  { grid-column-end: span 3; } // 6/3 = 2 per row
 }
 
-/* -------------------------------------------
-   EXTRA OPTIONAL: Auto-layout version
-   (No 12-col math; keeps teacher code above untouched)
-----------------------------------------------
-.cards {
-  display: grid;
-  gap: $spacing-unit;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-.card { grid-column: auto; }
-------------------------------------------- */
+// ---------------------------------------------------
+// 10) Bonus: modern auto-fit layout (optional)
+// ---------------------------------------------------
+// Instead of hard-coding “12 columns”, let the browser pack as many cards as fit,
+// each at least 240px, otherwise stretch to fill the row. Great for responsive grids.
+//
+// .cards {
+//   display: grid;
+//   gap: $spacing-unit;
+//   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+// }
+// .card { grid-column: auto; } // let the grid decide

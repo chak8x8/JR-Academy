@@ -5,7 +5,7 @@ body {
 }
 
 h1 {
-    color: #4181ee;
+    color:#4181ee;
     display: flex;
     justify-content: center;
 }
@@ -25,11 +25,12 @@ h1 {
     min-height: 250px;
     background-color: aquamarine;
     box-sizing: border-box;
-    color: #fff;
+    color:#fff;
     padding: 30px;
     border-radius: 3px;
-    margin: 20px;
-    box-shadow: rgb(50 50 93 /25%) 0px 30px 60px -12px, rgb(0 0 0 / 30%) 0px 18px 36px -18px;
+    margin:20px;
+    box-shadow: rgb(50 50 93 / 25%) 0px 30px 60px -12px,
+    rgb(0 0 0 / 30%) 0px 18px 36px -18px;
 }
 
 .card_image img {
@@ -40,7 +41,7 @@ h1 {
     background-color: #4181ee;
 }
 
-.card:last-child {
+.card:last-child{
     background-color: #673ab7;
 }
 
@@ -52,8 +53,8 @@ h1 {
 
 .card_price {
     background-color: #555;
-    color: #fff;
-    border: none;
+    color:#fff;
+    border:none;
     border-radius: 20px;
     padding: 5px 20px;
     cursor: pointer;

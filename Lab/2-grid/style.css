@@ -25,7 +25,7 @@ main {
 .card {
   grid-column-end: span 4;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3 ease;
 }
 .card:hover {
   transform: translateY(-8px);
@@ -53,23 +53,13 @@ main {
 @media screen and (max-width: 500px) {
   main {
     grid-gap: 10px;
+    grid-template-columns: 10px repeat(6, 1fr) 10px;
   }
-  main .card .cards {
+  main .cards {
     grid-column: 2/span 6;
     grid-template-columns: repeat(6, 1fr);
   }
-  main .card .cards .card {
+  main .cards .card {
     grid-column-end: span 6;
   }
-}
-/* -------------------------------------------
-   EXTRA OPTIONAL: Auto-layout version
-   (No 12-col math; keeps teacher code above untouched)
-----------------------------------------------
-.cards {
-  display: grid;
-  gap: $spacing-unit;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-.card { grid-column: auto; }
-------------------------------------------- *//*# sourceMappingURL=style.css.map */
+}/*# sourceMappingURL=style.css.map */
