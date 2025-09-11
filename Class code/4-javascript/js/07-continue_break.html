@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // continue 退出本次循環，繼續下次
+        // 1. 求1至100之間，除了能被7整除之外的整數和
+        let sum = 0;
+        for (let x = 1; x <= 100; x++){
+            if (x % 7 == 0) {
+                continue;
+            }
+            sum += x;
+        }
+        console.log(sum);
+        //break 退出整個循環
+        for (let i = 1; i <= 100; i++){
+            if (i == 3) {
+                break;
+            }
+            console.log(i); // 1, 2
+        }
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

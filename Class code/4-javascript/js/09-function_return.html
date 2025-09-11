@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 1. return 終止函數
+        function getSum(sum){
+            return num + 1;
+            alter('hello'); //Return後面的代碼不執行 
+        }
+        // 2. Return只能返回一個值
+        function getSum2(num1, num2){
+            return num1, num2; // 返回結果是最後一個值
+        }
+        getSum2(1, 3); // 3
+        // 3. 如果有Return則返回Return後面的數值，如果沒有Return，那就返回undefined.
+        function fn(){
+            let value = 'hello';
+        }
+        let res = fn();
+        console.log(res); // undefined
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
