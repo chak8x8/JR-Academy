@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Teacher Code + English Explanations + Playground</title>
+<style>
+  :root{
+    --bg:#0f172a; --paper:#111827; --ink:#e5e7eb; --muted:#9ca3af;
+    --accent:#22d3ee; --line:#1f2937;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{padding:20px}
+  h1{margin:0 0 6px}
+  p{margin:.5rem 0;color:var(--muted)}
+  main{display:grid;gap:16px;padding:0 20px 20px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px}
+  h2{margin:0 0 8px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+  button{
+    background:#1f2a44;color:#e5e7eb;border:1px solid #334155;border-radius:8px;
+    padding:8px 10px;cursor:pointer
+  }
+  button:hover{background:#243453}
+  pre{
+    background:#0b1220;color:#cbd5e1;border:1px solid #243041;border-radius:10px;
+    padding:12px;overflow:auto;white-space:pre
+  }
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .sandbox{border:1px dashed #334155;border-radius:10px;padding:8px;margin-top:10px}
+  iframe{width:100%;height:420px;border:0;border-radius:8px;background:white}
+  .small{color:var(--muted);font-size:14px}
+  .banner{background:#0b1220;border:1px dashed #334155;border-radius:8px;color:#93c5fd;padding:6px 8px;margin:6px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Teacher Code + English Explanations + Playground</h1>
+  <p>If you click “Run” and don’t see anything, open <b>DevTools → Console</b>. Errors are intentional to show the behavior.</p>
+</header>
+
+<main>
+
+  <!-- ============ TEACHER: ORIGINAL ============ -->
+  <section class="card">
+    <h2>Teacher (original — unchanged)</h2>
+    <div class="row">
+      <button id="runTeacher">▶ Run in sandbox</button>
+      <button id="openTeacherTab">🗔 Open in new tab</button>
+      <button id="copyTeacher">⧉ Copy teacher code</button>
+      <span class="small">Logs/errors go to the Console. Some lines intentionally throw.</span>
+    </div>
+    <pre><code id="teacherCodeBlock"></code></pre>
+    <div id="teacherSandbox" class="sandbox" hidden>
+      <div class="banner">Sandbox loaded. Open DevTools → Console to see logs/errors.</div>
+      <iframe id="teacherFrame" sandbox="allow-scripts"></iframe>
+    </div>
+  </section>
+
+  <!-- Template: teacher original (Chinese comments preserved) -->
+  <template id="teacherTpl">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // var let const
+        // 1. var hoisting
+        console.log('test', test); //undefined
+        var test = 'hello'
+        // 2. var重複聲明
+        var user = 'ben';
+        var user = 'chris';
+        // 3. var 全局作用域window.name.location, 局部作用力（函數作用力）
+        function fn(){
+            var num1 = 20;
+            console.log('num1', num1) //20
+        }
+        fn();
+        console.log('num1', num1) //Uncaught ReferenceError
+        // 4. var 在{}中間的語句， if, switch, for, while，var沒有 block scope
+        if (true) {
+            var a = 1;
+        }
+        console.log('a', a) // a 1
+
+        // let const
+        // 1. 暫時性死區
+        console.log(age) // Uncaught ReferenceError
+        let age = 20;
+        // 2. block scope
+        if (true) {
+            let x = 10;
+            const y = 20;
+            console.log('x', x); //10
+            console.log('y', y) //20
+        }
+        console.log('x', x); // Uncaught ReferenceError
+        console.log('y', y); // Uncaught ReferenceError
+        // const定義的值不能改變
+        const gender = 'male';
+        gender = 'hi'; // Uncaught TypeError
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
+  </template>
+
+  <!-- ============ TEACHER: ENGLISH EXPLAINED ============ -->
+  <section class="card">
+    <h2>Teacher (English explained) — same code with detailed comments</h2>
+    <div class="row">
+      <button id="runExplained">▶ Run in sandbox</button>
+      <button id="openExplainedTab">🗔 Open in new tab</button>
+      <button id="copyExplained">⧉ Copy explained code</button>
+      <span class="small">Still throws intentionally at the same places.</span>
+    </div>
+    <pre><code id="explainedCodeBlock"></code></pre>
+    <div id="explainedSandbox" class="sandbox" hidden>
+      <div class="banner">Sandbox loaded. Open DevTools → Console to see logs/errors.</div>
+      <iframe id="explainedFrame" sandbox="allow-scripts"></iframe>
+    </div>
+  </section>
+
+  <!-- Template: teacher code with English comments/translation -->
+  <template id="explainedTpl">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Code — English Explained</title>
+  <script>
+    // ============================================
+    // TOPIC: var vs let vs const — key behaviors
+    // ============================================
+
+    // 1) var hoisting (提升):
+    // 中文：變量聲明被“提升”到作用域頂部；賦值留在原處。提前訪問 → undefined（不報錯）。
+    console.log('test', test); // undefined
+    var test = 'hello';
+
+    // 2) var 重複聲明 (re-declare allowed, last wins)：
+    // 中文：var 可以在同一作用域內重複聲明，後面的會覆蓋前面的（容易埋坑）。
+    var user = 'ben';
+    var user = 'chris'; // user 現在是 "chris"
+
+    // 3) var 的函數作用域 vs 外部 (function scope)：
+    // 中文：var 在函數內聲明，只在函數內可見；函數外訪問會報 ReferenceError。
+    function fn(){
+      var num1 = 20;
+      console.log('num1 (inside fn)', num1); // 20
+    }
+    fn();
+    console.log('num1 (outside fn)', num1); // ❌ ReferenceError（這裡會中斷後面代碼）
+
+    // 注意：上面報錯後，下面代碼不再執行。若想繼續看效果，需要臨時注釋掉錯誤行，或用 try/catch 包起來。
+
+    // 4) var 沒有塊級作用域 (no block scope)：
+    // 中文：var 在 if/switch/for/while 的 {} 中聲明，會“漏”到外面。
+    if (true) {
+      var a = 1;
+    }
+    console.log('a', a); // 1
+
+    // 5) let/const 暫時性死區 (TDZ)：
+    // 中文：聲明之前訪問會直接 ReferenceError（比 var 的 undefined 更早發現錯誤）。
+    console.log(age); // ❌ ReferenceError（TDZ）
+    let age = 20;
+
+    // 6) let/const 的塊級作用域 (block scope)：
+    // 中文：只在 {} 內有效，外部訪問報錯。
+    if (true) {
+      let x = 10;
+      const y = 20;
+      console.log('x in block', x); // 10
+      console.log('y in block', y); // 20
+    }
+    console.log('x outside', x); // ❌ ReferenceError
+    console.log('y outside', y); // ❌ ReferenceError
+
+    // 7) const 不可重新賦值 (binding not reassignable)：
+    // 中文：const 變量不能重新賦值；但如果是物件/陣列，可以改「內容」(屬性)。
+    const gender = 'male';
+    gender = 'hi'; // ❌ TypeError：不能重新賦值
+  </script>
+</head>
+<body></body>
+</html>
+  </template>
+
+  <!-- ============ CHATGPT: INTERACTIVE PLAYGROUND ============ -->
+  <section class="card">
+    <h2>ChatGPT explanation — interactive playground (safe & runnable)</h2>
+    <div class="row">
+      <button id="runChatgpt">▶ Run in sandbox</button>
+      <button id="openChatgptTab">🗔 Open in new tab</button>
+      <button id="copyChatgpt">⧉ Copy ChatGPT code</button>
+      <span class="small">This one prints to the page AND to the Console, with try/catch.</span>
+    </div>
+    <pre><code id="chatgptCodeBlock"></code></pre>
+    <div id="chatgptSandbox" class="sandbox" hidden>
+      <div class="banner">Sandbox loaded. You’ll also see output inside the playground, not only Console.</div>
+      <iframe id="chatgptFrame" sandbox="allow-scripts"></iframe>
+    </div>
+  </section>
+
+  <!-- Template: the full playground -->
+  <template id="chatgptTpl">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>var vs let vs const — Interactive Playground</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #111827;
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --ok: #34d399;
+    --warn: #f59e0b;
+    --err: #f87171;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+  header { padding: 20px; }
+  h1 { margin:0 0 6px; }
+  p { margin: 0.5rem 0; color: var(--muted); }
+  main { display:grid; gap:16px; padding: 0 20px 20px; }
+  .card {
+    background: var(--panel); border: 1px solid #1f2937; border-radius: 12px;
+    padding: 14px 14px 10px; 
+  }
+  .card h2 { margin:0 0 6px; font-size:18px; }
+  .card pre {
+    background: #0b1220; color: #cbd5e1; padding: 10px; border-radius: 8px; overflow:auto;
+  }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin: 8px 0; }
+  button {
+    background:#1f2a44; color:#e5e7eb; border:1px solid #334155; border-radius:8px;
+    padding:8px 10px; cursor:pointer;
+  }
+  button:hover { background:#243453; }
+  .log {
+    background:#0b1220; border:1px dashed #334155; border-radius:8px; padding:10px; white-space:pre-wrap; min-height:46px;
+  }
+  .ok { color: var(--ok); }
+  .warn { color: var(--warn); }
+  .err { color: var(--err); }
+  .small { color: var(--muted); font-size:14px; }
+  code { background:#0b1220; padding:2px 4px; border-radius:4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>var vs let vs const — Interactive Playground</h1>
+  <p>Click “Run demo” on each card (or Run All at the top). Watch the output here and in your browser console.</p>
+  <div class="row">
+    <button id="runAll">▶ Run All Demos</button>
+    <span class="small">Tip: open DevTools → Console to see the same logs.</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- 1) var hoisting -->
+  <section class="card" id="demo1">
+    <h2>1) <code>var</code> hoisting (declaration moves to top; value is <code>undefined</code>)</h2>
+    <p><b>Concept:</b> JavaScript “hoists” <code>var</code> <i>declarations</i> to the top of their scope. The <i>assignment</i> stays in place. Accessing before assignment gives <code>undefined</code>, not an error.</p>
+    <p><b>Why it matters:</b> It can hide bugs—code seems to “work” but reads a value before it’s set.</p>
+    <pre><code>// Reads as if it were:
+// var test;             // hoisted declaration
+// console.log(test);    // undefined
+// test = 'hello';
+
+console.log(test); // undefined (no crash)
+var test = 'hello';
+console.log(test); // "hello"</code></pre>
+    <div class="row">
+      <button data-run="1">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- 2) let/const Temporal Dead Zone (TDZ) -->
+  <section class="card" id="demo2">
+    <h2>2) <code>let</code>/<code>const</code> and the TDZ (error before initialization)</h2>
+    <p><b>Concept:</b> With <code>let</code>/<code>const</code>, the variable exists but is in the <b>Temporal Dead Zone</b> until its declaration line runs. Accessing it early throws a <code>ReferenceError</code>.</p>
+    <p><b>Why it matters:</b> TDZ fails fast and loudly—catches bugs earlier than <code>var</code>.</p>
+    <pre><code>try {
+  console.log(age); // ReferenceError (TDZ)
+} catch (e) {
+  console.log('error:', e.message);
+}
+let age = 20;
+console.log(age);   // 20</code></pre>
+    <div class="row">
+      <button data-run="2">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- 3) Redeclaration: var OK, let/const not OK -->
+  <section class="card" id="demo3">
+    <h2>3) Redeclaration in the same scope</h2>
+    <p><b>Concept:</b> <code>var</code> can be declared again in the same scope (last one wins). <code>let</code>/<code>const</code> can’t be redeclared in the same scope.</p>
+    <p><b>Why it matters:</b> Accidental redeclarations are bugs waiting to happen; <code>let</code>/<code>const</code> help prevent them.</p>
+    <pre><code>// var can be redeclared (not recommended):
+var user = 'ben';
+var user = 'chris';
+console.log(user); // "chris"
+
+// let/const redeclaration throws SyntaxError.
+// We use eval + try/catch so the page keeps running.
+try {
+  eval('let city = "LA"; let city = "NY";');
+} catch (e) {
+  console.log('let redeclare error:', e.name, e.message);
+}</code></pre>
+    <div class="row">
+      <button data-run="3">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- 4) Global object pollution -->
+  <section class="card" id="demo4">
+    <h2>4) Global variables and <code>window</code> pollution</h2>
+    <p><b>Concept:</b> In a regular script (non-module), <code>var</code> at the top level becomes a property of <code>window</code>. <code>let</code>/<code>const</code> do not.</p>
+    <p><b>Why it matters:</b> Adding stuff to <code>window</code> can clash with other code. Prefer <code>let</code>/<code>const</code>.</p>
+    <pre><code>var globalVar = 'I am on window';
+let globalLet = 'I am NOT on window';
+
+console.log('window.globalVar:', window.globalVar); // string
+console.log('window.globalLet:', window.globalLet); // undefined</code></pre>
+    <div class="row">
+      <button data-run="4">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- 5) Function scope vs outside -->
+  <section class="card" id="demo5">
+    <h2>5) Function scope (<code>var</code>)</h2>
+    <p><b>Concept:</b> <code>var</code> is scoped to the function. A <code>var</code> declared inside a function is invisible outside it.</p>
+    <p><b>Why it matters:</b> Keeps temporary values private; also explains why <code>var</code> ignores block scope (see next demo).</p>
+    <pre><code>function fn() {
+  var num1 = 20;
+  console.log('inside fn:', num1); // 20
+}
+fn();
+try {
+  console.log('outside:', num1); // ReferenceError
+} catch (e) {
+  console.log('error:', e.message);
+}</code></pre>
+    <div class="row">
+      <button data-run="5">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- 6) Block scope -->
+  <section class="card" id="demo6">
+    <h2>6) Block scope (<code>if {}</code>, <code>for {}</code>)</h2>
+    <p><b>Concept:</b> <code>var</code> does <u>not</u> have block scope (it leaks out of <code>{}</code>), but <code>let</code>/<code>const</code> do (they stay inside the braces).</p>
+    <p><b>Why it matters:</b> Block scoping avoids name leaks and accidental overrides.</p>
+    <pre><code>if (true) {
+  var a = 1;     // leaks out of the block
+  let b = 2;     // stays in the block
+  const c = 3;   // stays in the block
+}
+console.log('a =', a);  // 1
+try { console.log('b =', b); } catch (e) { console.log('b error:', e.message); }
+try { console.log('c =', c); } catch (e) { console.log('c error:', e.message); }</code></pre>
+    <div class="row">
+      <button data-run="6">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- 7) for-loop closures: var vs let -->
+  <section class="card" id="demo7">
+    <h2>7) <code>for</code> loop &amp; closures: <code>var</code> vs <code>let</code></h2>
+    <p><b>Concept:</b> Each iteration with <code>let</code> gets its own binding, so callbacks “remember” the right value. With <code>var</code>, all callbacks see the final value.</p>
+    <p><b>Why it matters:</b> This is a very common source of bugs with timers and event handlers.</p>
+    <pre><code>// Using var (all timeouts log 4)
+for (var i = 1; i &lt;= 3; i++) {
+  setTimeout(() =&gt; console.log('var i =', i), i * 50);
+}
+
+// Using let (logs 1, 2, 3)
+for (let j = 1; j &lt;= 3; j++) {
+  setTimeout(() =&gt; console.log('let j =', j), j * 50);
+}</code></pre>
+    <div class="row">
+      <button data-run="7">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- 8) const doesn't mean frozen object -->
+  <section class="card" id="demo8">
+    <h2>8) <code>const</code> means “no reassignment”, not “immutable”</h2>
+    <p><b>Concept:</b> You can’t reassign a <code>const</code> variable, but you <em>can mutate</em> the contents of an object/array it points to.</p>
+    <p><b>Why it matters:</b> Use <code>const</code> by default; switch to <code>let</code> only if you reassign. (And avoid <code>var</code> in modern code.)</p>
+    <pre><code>const person = { name: 'Ada' };
+person.name = 'Grace'; // OK (mutation)
+console.log(person);
+
+try {
+  // Not OK: reassigning the binding itself
+  // (We use eval to avoid breaking parsing if your browser is strict)
+  eval('person = { name: "Alan" }');
+} catch (e) {
+  console.log('reassign error:', e.name, e.message);
+}</code></pre>
+    <div class="row">
+      <button data-run="8">▶ Run demo</button>
+    </div>
+    <div class="log" aria-live="polite"></div>
+  </section>
+
+</main>
+
+<script>
+  // A tiny logger that prints to both the card and the console.
+  function mkLogger(card) {
+    const box = card.querySelector('.log');
+    return {
+      log: (...args) => {
+        console.log(...args);
+        const line = args.map(x => (typeof x === 'string' ? x : JSON.stringify(x))).join(' ');
+        box.textContent += line + '\\n';
+      },
+      ok: (msg) => { console.log(msg); box.innerHTML += '<span class="ok">' + msg + '</span>\\n'; },
+      warn: (msg) => { console.warn(msg); box.innerHTML += '<span class="warn">' + msg + '</span>\\n'; },
+      err: (e) => { console.error(e); box.innerHTML += '<span class="err">' + (e && e.message ? e.message : e) + '</span>\\n'; },
+      clear: () => { box.textContent = ''; }
+    };
+  }
+
+  // DEMO IMPLEMENTATIONS (each isolated so failures don't kill the page)
+  const demos = {
+    1(card){
+      const {log, clear} = mkLogger(card); clear();
+      try {
+        log('Before declaration, test =', test); // undefined (hoisted declaration)
+        var test = 'hello';
+        log('After assignment, test =', test);   // "hello"
+      } catch(e) { log('Unexpected error:', e); }
+    },
+    2(card){
+      const {log, err, clear} = mkLogger(card); clear();
+      try {
+        try {
+          log('Reading age before declaration...');
+          log(age); // TDZ → ReferenceError
+        } catch(e) { err(e); }
+        let age = 20;
+        log('After let age = 20 → age =', age);
+      } catch(e) { err(e); }
+    },
+    3(card){
+      const {log, err, clear} = mkLogger(card); clear();
+      try {
+        var user = 'ben';
+        var user = 'chris';      // allowed (last wins)
+        log('var redeclare → user =', user);
+
+        try {
+          eval('let city = "LA"; let city = "NY";'); // SyntaxError
+        } catch(e) { err(e); }
+      } catch(e) { err(e); }
+    },
+    4(card){
+      const {log, clear} = mkLogger(card); clear();
+      try {
+        var globalVar = 'I am on window';
+        let globalLet = 'I am NOT on window';
+        log('window.globalVar:', window.globalVar); // string
+        log('window.globalLet:', String(window.globalLet)); // "undefined"
+      } catch(e) { log('Unexpected error:', e); }
+    },
+    5(card){
+      const {log, err, clear} = mkLogger(card); clear();
+      try {
+        function fn(){
+          var num1 = 20;
+          log('inside fn, num1 =', num1);
+        }
+        fn();
+        try {
+          log('outside fn, num1 =', num1); // ReferenceError
+        } catch(e){ err(e); }
+      } catch(e) { err(e); }
+    },
+    6(card){
+      const {log, err, clear} = mkLogger(card); clear();
+      try {
+        if (true) {
+          var a = 1;     // leaks out of block
+          let b = 2;     // stays inside
+          const c = 3;   // stays inside
+        }
+        log('a =', a);   // 1
+        try { log('b =', b); } catch(e) { err(e); }
+        try { log('c =', c); } catch(e) { err(e); }
+      } catch(e) { err(e); }
+    },
+    7(card){
+      const {log, clear} = mkLogger(card); clear();
+      const start = performance.now();
+      const t = ms => Math.round(ms - start);
+
+      for (var i = 1; i <= 3; i++) {
+        setTimeout(() => log(`var i = ${i} (at +${t(performance.now())}ms)`), i * 50);
+      }
+      for (let j = 1; j <= 3; j++) {
+        setTimeout(() => log(`let j = ${j} (at +${t(performance.now())}ms)`), j * 50);
+      }
+      log('Queued timeouts… watch how var logs 4,4,4 but let logs 1,2,3.');
+    },
+    8(card){
+      const {log, err, clear} = mkLogger(card); clear();
+      try {
+        const person = { name: 'Ada' };
+        person.name = 'Grace';        // mutation OK
+        log('After mutation:', person);
+        try {
+          eval('person = { name: "Alan" }'); // reassign → error
+        } catch(e) { err(e); }
+      } catch(e) { err(e); }
+    },
+  };
+
+  // Wire up buttons
+  document.querySelectorAll('[data-run]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-run');
+      const card = btn.closest('.card');
+      demos[id](card);
+    });
+  });
+
+  // Run all
+  document.getElementById('runAll').addEventListener('click', () => {
+    Object.keys(demos).forEach(id => {
+      const card = document.querySelector(`#demo${id}`);
+      demos[id](card);
+    });
+  });
+</script>
+</body>
+</html>
+  </template>
+
+</main>
+
+<script>
+  // Utility: put template content into code blocks (escaped)
+  function fillCodeBlockFromTemplate(codeEl, tplEl){
+    codeEl.textContent = tplEl.innerHTML.trim();
+  }
+
+  // Utility: run template content in a sandboxed iframe
+  function runTemplateInIframe(tplEl, iframeEl, container){
+    iframeEl.srcdoc = tplEl.innerHTML;
+    container.hidden = false;
+  }
+
+  // Utility: open template content in a new tab (Blob)
+  function openTemplateInNewTab(tplEl){
+    const blob = new Blob([tplEl.innerHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  }
+
+  // Utility: copy template content to clipboard
+  async function copyTemplate(tplEl){
+    const text = tplEl.innerHTML.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+      alert('Copied!');
+    } catch(e){
+      alert('Copy failed (some browsers require HTTPS): ' + e);
+    }
+  }
+
+  // Teacher (original)
+  const teacherTpl = document.getElementById('teacherTpl');
+  const teacherCodeBlock = document.getElementById('teacherCodeBlock');
+  const runTeacher = document.getElementById('runTeacher');
+  const openTeacherTab = document.getElementById('openTeacherTab');
+  const copyTeacher = document.getElementById('copyTeacher');
+  const teacherFrame = document.getElementById('teacherFrame');
+  const teacherSandbox = document.getElementById('teacherSandbox');
+  fillCodeBlockFromTemplate(teacherCodeBlock, teacherTpl);
+  runTeacher.addEventListener('click', () => runTemplateInIframe(teacherTpl, teacherFrame, teacherSandbox));
+  openTeacherTab.addEventListener('click', () => openTemplateInNewTab(teacherTpl));
+  copyTeacher.addEventListener('click', () => copyTemplate(teacherTpl));
+
+  // Teacher (English explained)
+  const explainedTpl = document.getElementById('explainedTpl');
+  const explainedCodeBlock = document.getElementById('explainedCodeBlock');
+  const runExplained = document.getElementById('runExplained');
+  const openExplainedTab = document.getElementById('openExplainedTab');
+  const copyExplained = document.getElementById('copyExplained');
+  const explainedFrame = document.getElementById('explainedFrame');
+  const explainedSandbox = document.getElementById('explainedSandbox');
+  fillCodeBlockFromTemplate(explainedCodeBlock, explainedTpl);
+  runExplained.addEventListener('click', () => runTemplateInIframe(explainedTpl, explainedFrame, explainedSandbox));
+  openExplainedTab.addEventListener('click', () => openTemplateInNewTab(explainedTpl));
+  copyExplained.addEventListener('click', () => copyTemplate(explainedTpl));
+
+  // ChatGPT playground
+  const chatgptTpl = document.getElementById('chatgptTpl');
+  const chatgptCodeBlock = document.getElementById('chatgptCodeBlock');
+  const runChatgpt = document.getElementById('runChatgpt');
+  const openChatgptTab = document.getElementById('openChatgptTab');
+  const copyChatgpt = document.getElementById('copyChatgpt');
+  const chatgptFrame = document.getElementById('chatgptFrame');
+  const chatgptSandbox = document.getElementById('chatgptSandbox');
+  fillCodeBlockFromTemplate(chatgptCodeBlock, chatgptTpl);
+  runChatgpt.addEventListener('click', () => runTemplateInIframe(chatgptTpl, chatgptFrame, chatgptSandbox));
+  openChatgptTab.addEventListener('click', () => openTemplateInNewTab(chatgptTpl));
+  copyChatgpt.addEventListener('click', () => copyTemplate(chatgptTpl));
+</script>
+</body>
+</html>
