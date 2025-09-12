@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password generator — Teacher (minimally fixed)</title>
+
+  <!-- 💡 Suggestion: keep a single CSS file compiled from SCSS -->
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- (Optional) Icons for the clipboard button -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+        crossorigin="anonymous"/>
+</head>
+<body>
+  <main class="container">
+    <header>Password Generator</header>
+
+    <!-- FIX: use .result-container (hyphen) — SCSS updated to match -->
+    <section class="result-container">
+      <span id="result"></span>
+
+      <!-- Clipboard button exists; JS below can wire it -->
+      <button class="btn" id="clipboard" type="button" aria-label="Copy to clipboard">
+        <i class="far fa-clipboard" aria-hidden="true"></i>
+      </button>
+    </section>
+
+    <section class="settings">
+      <div class="setting">
+        <label for="length">Password length</label>
+        <input type="number" id="length" min="4" max="32" value="20">
+        <!-- 💡 Suggestion: allow a bit more than 20 (now 32) -->
+      </div>
+
+      <div class="setting">
+        <label for="uppercase">Include uppercase letters</label>
+        <input type="checkbox" id="uppercase" checked>
+      </div>
+
+      <div class="setting">
+        <label for="lowercase">Include lowercase letters</label>
+        <input type="checkbox" id="lowercase" checked>
+      </div>
+
+      <div class="setting">
+        <label for="numbers">Include numbers</label>
+        <input type="checkbox" id="numbers" checked>
+      </div>
+
+      <div class="setting">
+        <!-- FIX: label text said “Include numbers” but this is symbols -->
+        <label for="symbols">Include symbols</label>
+        <input type="checkbox" id="symbols" checked>
+      </div>
+    </section>
+
+    <!-- FIX: class is .btn (SCSS also updated); previously .btm in SCSS -->
+    <button class="btn btn-large" id="generate">Generate Password</button>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

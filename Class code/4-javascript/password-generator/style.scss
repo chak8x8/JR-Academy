@@ -1,0 +1,87 @@
+$primary-bg:   #3b3b98;
+$secondary-bg: #23235b;
+$third-bg:     #adf0f7;
+$text-color:   #fff;
+
+@mixin button-style($bg-color, $font-size: 16px){
+  border: none;
+  background-color: $bg-color;
+  color: $text-color;
+  font-size: $font-size;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+  &:hover { background-color: lighten($bg-color, 10%); }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background-color: $third-bg;
+  color: $text-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; // 💡 Suggestion: more reliable than height:100vh on mobile
+  margin: 0;         // 💡 Suggestion: remove default margin
+}
+
+.container {
+  background-color: $secondary-bg;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  width: min(520px, 92vw); // 💡 Suggestion: keep tidy on small screens
+  border-radius: 8px;
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: .5px;
+  }
+
+  // FIX: use .result-container (hyphen) to match HTML
+  .result-container {
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    padding: 12px 10px;
+    min-height: 50px;     // 💡 Suggestion: avoid content jump
+    margin-bottom: 20px;
+    position: relative;
+    gap: 10px;
+
+    .btn {
+      @include button-style($primary-bg, 20px);
+      position: absolute;
+      top: 5px;
+      right: 8px;        // 💡 Suggestion: position on the right
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+    }
+  }
+
+  .settings {
+    .setting {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+    }
+  }
+
+  // FIX: class should be .btn, not .btm; matches HTML button classes
+  .btn {
+    @include button-style($primary-bg);
+    &.btn-large {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 8px; // 💡 Suggestion: consistent rounding
+    }
+  }
+}
