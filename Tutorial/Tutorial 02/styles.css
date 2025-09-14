@@ -1,11 +1,12 @@
 .nav-header {
-    /* make it a flex container; */
+    /* make it flex container; */
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 12px;
 }
 
+/* css selector */
 .nav-header-left {
     display: flex;
     align-items: center;
@@ -27,7 +28,7 @@
     border: 1px solid transparent;
     border-radius: 2px;
     background-color: transparent;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease;
 }
 
 .nav-header .nav-link:hover {
@@ -36,7 +37,7 @@
     border: 1px solid #000;
 }
 
-.nav-search-icon {
+.nav-search-icon{
     margin-right: 12px;
 }
 
@@ -46,15 +47,15 @@
     background-color: transparent;
     padding: 6px 12px;
     margin: 0 8px;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .nav-header .button-sign-in:hover {
     box-shadow: 2px 2px;
     transform: translate(-2px, -2px);
-}
+}   
 
-.nav-header .button-sign-out {
+.nav-header .button-sign-up {
     border: 1px solid transparent;
     border-radius: 2px;
     background-color: rgb(255, 87, 87);
@@ -64,18 +65,18 @@
     transition: all 0.1s ease;
 }
 
-
-.nav-header .button-sign-out:hover {
+.nav-header .button-sign-up:hover {
     box-shadow: #000 2px 2px;
     transform: translate(-2px, -2px);
-    border: 1px sold #000;
+    border: 1px solid #000;
+    
 }
 
 .banner-section {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 20px;
+    padding: 20px
 }
 
 .banner-content-left {
@@ -83,12 +84,12 @@
 }
 
 .banner-content-right {
-    width: 50%;
+    width: 30%;
 }
 
 .banner-content-header {
     font-weight: 700;
-    color: rgb(255, 87, 87);
+    color:rgb(255, 87, 87)
 }
 
 .banner-content-subheader {
@@ -106,7 +107,7 @@
 
 .banner-content-button {
     color: #fff;
-    background-color: rgb(255, 87, 87);
+    background-color:rgb(255, 87, 87);
     padding: 10px 24px;
     border: 1px solid #000;
     border-radius: 2px;
@@ -116,10 +117,10 @@
 
 .banner-content-button:hover {
     color: #000;
-    background-color: rgb(255, 196, 196);
+    background-color:rgb(255, 196, 196);
 }
 
-.testimonials-section {
+.testimonial-section {
     display: flex;
     justify-content: center;
     align-items: center;
