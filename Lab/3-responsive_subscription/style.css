@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #fefefe;
+}
+
+.pricing {
+  padding: 100px 0;
+}
+
+.cards-wrapper {
+  display: flex;
+  justify-content: center;
+  max-width: 1440px;
+  margin: 0 auto;
+}/*# sourceMappingURL=style.css.map */
