@@ -28,7 +28,7 @@ body {
 
 %price-card {
     margin-right: $gutter;
-    &:last-child:{
+    &:last-child {
         margin-right: 0;
     }
     border: 5px solid var(--clr);
