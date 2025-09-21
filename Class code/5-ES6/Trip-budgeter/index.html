@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trip Budgeter</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>Trip Budgeter</h1>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Add Expense</h2>
+
+      <!-- NOTE: the submit handler uses form.elements.NAME,
+           so inputs need a 'name' that matches what JS reads -->
+      <form id="add-form" class="form">
+        <div class="row">
+          <label for="itemTitle">
+            Title
+            <!-- FIX: add id to match label "for" -->
+            <input id="itemTitle" type="text" name="itemTitle" required />
+          </label>
+
+          <label for="category">
+            Category
+            <select name="category" id="category">
+              <option value="Transport">Transport</option>
+              <option value="Food">Food</option>
+              <option value="Lodging">Lodging</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <label for="amount">
+            Amount
+            <!-- FIX: add id="amount" and keep name="amount" (JS reads el.amount) -->
+            <input id="amount" type="number" name="amount" min="0" step="0.01" placeholder="0.00" required />
+          </label>
+
+          <label for="date">
+            Date
+            <!-- FIX: add id + name so JS can read el.date -->
+            <input id="date" name="date" type="date" />
+          </label>
+        </div>
+
+        <div class="row">
+          <button class="btn" type="submit">Add</button>
+          <button class="btn ghost" type="button" id="seed">Load Initial Data</button>
+          <!-- 💡 Suggestion: wire #seed later to preload some demo items -->
+        </div>
+      </form>
+    </section>
+
+    <!-- Add 'list' class so SCSS .list {...} rules apply -->
+    <section class="card list">
+      <div class="list-head">
+        <h2>Filter</h2>
+        <div class="right">
+          <span class="pill" id="total">Total: $0.00</span>
+          <span class="btn tiny" id="sort-amount">Sort by Amount</span>
+          <span class="btn tiny" id="sort-date">Sort by Date</span> <!-- FIX: id used by JS -->
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="search">
+          Search
+          <input type="text" id="search" placeholder="title contains" />
+        </label>
+
+        <label for="cat">
+          Category
+          <select name="cat" id="cat">
+            <option value="All">All</option>
+            <option value="Transport">Transport</option>
+            <option value="Food">Food</option>
+            <option value="Lodging">Lodging</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+
+        <button class="btn" id="clear" type="button">Clear</button>
+      </div>
+
+      <ul class="items" id="items"><!-- (empty; render() will fill) --></ul>
+      <!-- (Removed the placeholder <li>Test</li>) -->
+    </section>
+  </main>
+
+  <!-- FIX: script tags are not self-closing -->
+  <script src="main.js"></script>
+</body>
+</html>
