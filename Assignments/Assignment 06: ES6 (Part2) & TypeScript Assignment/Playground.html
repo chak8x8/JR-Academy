@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JS Async Playground — Callbacks, Promises, Async/Await</title>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --panel:#111827; /* gray-900 */
+      --muted:#94a3b8; /* slate-400 */
+      --text:#e5e7eb; /* gray-200 */
+      --accent:#22d3ee; /* cyan-400 */
+      --accent2:#a78bfa; /* violet-400 */
+      --ok:#34d399; /* emerald-400 */
+      --err:#f87171; /* red-400 */
+      --warn:#fbbf24; /* amber-400 */
+    }
+    *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"}
+    body{margin:0;background:linear-gradient(135deg,var(--bg),#020617);color:var(--text)}
+    .wrap{max-width:1100px;margin:32px auto;padding:16px 20px}
+    h1{margin:0 0 12px;font-size: clamp(20px, 2.8vw, 34px);letter-spacing:.3px}
+    .sub{color:var(--muted);margin-bottom:20px}
+    .card{background:linear-gradient(180deg,#0b1220,var(--panel));border:1px solid #1f2937;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 0 rgba(255,255,255,.05) inset}
+    .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    input[type="text"]{flex:1;min-width:240px;background:#0b1220;border:1px solid #334155;color:var(--text);border-radius:10px;padding:12px 14px;outline:none}
+    button{border:0;border-radius:12px;padding:10px 14px;background:#0b1220;color:var(--text);border:1px solid #334155;cursor:pointer}
+    button:hover{border-color:var(--accent)}
+    button.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#001018;border:0;font-weight:700}
+    .stack{display:grid;gap:10px}
+    .log{background:#020617;border:1px solid #1f2937;border-radius:12px;padding:12px;min-height:200px;max-height:360px;overflow:auto;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:13px;line-height:1.5}
+    .line{padding:3px 6px;border-radius:8px}
+    .time{opacity:.6;margin-right:8px}
+    .ok{color:var(--ok)}
+    .err{color:var(--err)}
+    .warn{color:var(--warn)}
+    code{background:#0b1220;border:1px solid #1f2937;padding:2px 6px;border-radius:8px}
+    details{border:1px solid #1f2937;border-radius:12px;padding:10px}
+    details>summary{cursor:pointer;font-weight:700}
+    .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>JS Async Playground — Callbacks, Promises, Async/Await</h1>
+    <div class="sub">Type a URL, click buttons, and watch the output below. This simulates server calls with <code>setTimeout</code>.</div>
+
+    <div class="card stack">
+      <div class="row">
+        <input id="url" type="text" value="https://api.example.com/data" />
+        <button id="btnClear">Clear Log</button>
+      </div>
+      <div class="grid">
+        <div class="stack">
+          <strong>Part 1: Callback</strong>
+          <button id="btnCb" class="primary">Run Callback Example</button>
+        </div>
+        <div class="stack">
+          <strong>Part 2: Promise</strong>
+          <div class="row">
+            <button id="btnPrOk">Run Promise (OK)</button>
+            <button id="btnPrBad">Run Promise (Invalid URL)</button>
+          </div>
+        </div>
+        <div class="stack">
+          <strong>Part 3: Async/Await</strong>
+          <div class="row">
+            <button id="btnAwOk">Run Async/Await (OK)</button>
+            <button id="btnAwBad">Run Async/Await (Invalid URL)</button>
+          </div>
+        </div>
+      </div>
+      <div class="log" id="log" aria-live="polite"></div>
+    </div>
+
+    <div class="card stack">
+      <h2>Concept cheat‑sheet</h2>
+      <details open>
+        <summary>Callbacks</summary>
+        <p>A <em>callback</em> is a function you pass into another function to be called later. We simulate network delay with <code>setTimeout</code>.</p>
+        <pre><code>// Shape
+function doWork(arg, callback) {
+  setTimeout(() => callback("done"), 2000);
+}</code></pre>
+        <ul>
+          <li>Pros: simple shape, built into many browser APIs.</li>
+          <li>Cons: nesting can get messy ("callback hell").</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Promises</summary>
+        <p>A <em>Promise</em> represents a value you will have later. Create with <code>new Promise((resolve, reject) =&gt; { ... })</code> and consume with <code>.then/.catch</code>.</p>
+        <pre><code>// Shape
+function work() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve("ok"), 2000);
+  });
+}
+work().then(v => console.log(v)).catch(e => console.error(e));</code></pre>
+      </details>
+      <details>
+        <summary>Async/Await</summary>
+        <p><code>async</code> functions return Promises. <code>await</code> pauses inside an async function until the Promise settles. Use <code>try/catch</code> for errors.</p>
+        <pre><code>async function run(){
+  try {
+    const v = await work();
+    console.log(v);
+  } catch (e) {
+    console.error(e);
+  }
+}</code></pre>
+      </details>
+      <details>
+        <summary>Bonus: TypeScript (read‑only note)</summary>
+        <p>TypeScript adds types. You write <code>.ts</code>, compile with <code>tsc</code> to <code>.js</code>. Quick snippet:</p>
+        <pre><code>// index.ts
+function add(a: number, b: number): number { return a + b; }
+interface Person { name: string; age: number; }
+function greet(p: Person): void { console.log(`Hello, ${p.name}!`); }</code></pre>
+        <p>This page does not compile TS in the browser; use your terminal with <code>npm i -g typescript</code> and <code>tsc --init</code>.</p>
+      </details>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Utilities ----------
+    const $ = (sel) => document.querySelector(sel);
+    const logEl = $('#log');
+    const stamp = () => new Date().toLocaleTimeString();
+    function log(msg, cls = '') {
+      const div = document.createElement('div');
+      div.className = `line ${cls}`.trim();
+      div.innerHTML = `<span class="time">[${stamp()}]</span>${msg}`;
+      logEl.appendChild(div);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+    function clearLog(){ logEl.innerHTML = ''; }
+
+    // ---------- Part 1: Callback version ----------
+    function fetchData(url, callback) {
+      log(`Fetching data from <code>${url}</code>...`, 'warn');
+      setTimeout(() => {
+        callback(`Data from ${url}`);
+      }, 2000);
+    }
+
+    // ---------- Part 2: Promise version ----------
+    function fetchDataPromise(url) {
+      return new Promise((resolve, reject) => {
+        if (!url || !url.trim()) {
+          reject(new Error('Invalid URL'));
+          return;
+        }
+        log(`Fetching data from <code>${url}</code>...`, 'warn');
+        setTimeout(() => {
+          resolve(`Data from ${url}`);
+        }, 2000);
+      });
+    }
+
+    // ---------- Part 3: Async/Await wrapper ----------
+    async function loadData(url) {
+      try {
+        const data = await fetchDataPromise(url);
+        log(`OK: ${data}`, 'ok');
+      } catch (err) {
+        log(`ERROR: ${err?.message ?? err}`, 'err');
+      }
+    }
+
+    // ---------- Wire up UI ----------
+    $('#btnClear').addEventListener('click', clearLog);
+    $('#btnCb').addEventListener('click', () => {
+      const url = $('#url').value;
+      fetchData(url, (data) => log(`CB: ${data}`, 'ok'));
+    });
+    $('#btnPrOk').addEventListener('click', () => {
+      const url = $('#url').value;
+      fetchDataPromise(url)
+        .then((data) => log(`P: ${data}`, 'ok'))
+        .catch((e) => log(`P err: ${e?.message ?? e}`, 'err'));
+    });
+    $('#btnPrBad').addEventListener('click', () => {
+      fetchDataPromise('')
+        .then((data) => log(`P: ${data}`, 'ok'))
+        .catch((e) => log(`P err: ${e?.message ?? e}`, 'err'));
+    });
+    $('#btnAwOk').addEventListener('click', () => {
+      const url = $('#url').value;
+      loadData(url);
+    });
+    $('#btnAwBad').addEventListener('click', () => {
+      loadData('');
+    });
+  </script>
+</body>
+</html>
