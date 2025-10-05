@@ -14,7 +14,7 @@
          font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial}
     .wrap{max-width:1000px;margin:24px auto;padding:16px}
     h1{margin:0 0 8px;font-size:clamp(20px,2.6vw,34px)}
-    p{color:var(--muted)}
+    p,li{color:var(--muted)}
     .card{background:linear-gradient(180deg,var(--panel),#0e1727);border:1px solid #1f2937;border-radius:14px;padding:16px}
     .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -34,6 +34,49 @@
     <h1>Promises / All / Race / Async‑Await — Playground</h1>
     <p>Choose success or failure, then run each demo to see timing and results.</p>
 
+    <div class="card" style="margin:12px 0 16px">
+      <h2 style="margin:0 0 8px">How this page works</h2>
+      <details open>
+        <summary><strong>Concepts</strong> — Promise, <code>Promise.all</code>, <code>Promise.race</code>, <code>async/await</code></summary>
+        <ul style="margin:8px 0 0 18px;color:#cbd5e1">
+          <li><strong>Promise</strong> = a box for a future value. Create with <code>new Promise((resolve,reject)=>...)</code>; use with <code>.then/.catch</code>.</li>
+          <li><strong>Promise.all([p1,p2])</strong> waits for <em>all</em> to resolve; if any rejects, it rejects immediately with the first error.</li>
+          <li><strong>Promise.race([p1,p2])</strong> settles with the <em>first</em> promise to resolve/reject. Good for timeouts.</li>
+          <li><strong>async/await</strong> is nicer syntax over Promises; <code>await</code> pauses inside an <code>async</code> function; handle errors with <code>try/catch</code>.</li>
+        </ul>
+      </details>
+      <details>
+        <summary><strong>Controls → Code</strong> (which button runs what)</summary>
+        <ul style="margin:8px 0 0 18px;color:#cbd5e1">
+          <li><b>Chain: apple → banana → orange</b> → <code>buyFruit('apple')</code> → <code>then</code> → <code>buyFruit('banana')</code> → <code>then</code> → <code>buyFruit('orange')</code>. Errors go to <code>.catch</code>.</li>
+          <li><b>All: both pass</b> → <code>Promise.all([dataOne(), dataTwo()])</code>. Success only if both resolve; logs the array of results.</li>
+          <li><b>All: one fails</b> → same call, but demonstrates the first rejection.</li>
+          <li><b>Race</b> → <code>Promise.race([timeout(3000,'request timeout'), fetchDataSim()])</code>. First to finish wins.</li>
+          <li><b>Await (OK/Error)</b> → uses <code>await buyFruit(...)</code> three times inside <code>try/catch</code>. Banana rejects in “fail” mode.</li>
+        </ul>
+      </details>
+      <details>
+        <summary><strong>Where do the logs come from?</strong></summary>
+        <p style="color:#cbd5e1;margin:8px 0 0">All demos call <code>log(msg, cls)</code> which appends a line to the panel. Classes <code>.ok</code>, <code>.warn</code>, <code>.err</code> color the lines.</p>
+        <pre style="background:#020617;border:1px solid #1f2937;border-radius:8px;padding:8px;overflow:auto"><code>function log(msg, cls=''){
+  const div = document.createElement('div');
+  div.className = `line ${cls}`.trim();
+  div.innerHTML = `[${new Date().toLocaleTimeString()}] ` + msg;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}</code></pre>
+      </details>
+      <details>
+        <summary><strong>Simulated APIs</strong> (based on teacher code)</summary>
+        <ul style="margin:8px 0 0 18px;color:#cbd5e1">
+          <li><code>buyFruit(fruit)</code>: resolves after ~800ms; rejects banana when mode = <code>fail</code>.</li>
+          <li><code>dataOne()</code>, <code>dataTwo()</code>: resolve strings or reject based on mode.</li>
+          <li><code>timeout(ms, value)</code>: resolves with <code>value</code> after <code>ms</code> (good for races/timeouts).</li>
+          <li><code>fetchDataSim()</code>: resolves after ~2000ms (pretend network).</li>
+        </ul>
+      </details>
+    </div>
+
     <div class="card">
       <div class="row">
         <input id="url" type="text" value="/fruit" />
@@ -46,24 +89,24 @@
       <div class="grid" style="margin-top:10px">
         <div>
           <h3>buyFruit chain (Promises)</h3>
-          <button id="btnChain" class="primary">Chain: apple → banana → orange</button>
+          <button id="btnChain" class="primary" title="Promise chain with then()">Chain: apple → banana → orange</button>
         </div>
         <div>
           <h3>Promise.all</h3>
           <div class="row">
-            <button id="btnAllOk">All: both pass</button>
-            <button id="btnAllFail">All: one fails</button>
+            <button id="btnAllOk" title="Both resolve">All: both pass</button>
+            <button id="btnAllFail" title="One rejects">All: one fails</button>
           </div>
         </div>
         <div>
           <h3>Promise.race</h3>
-          <button id="btnRace">Race: 3s timeout vs 2s fetch</button>
+          <button id="btnRace" title="Race timeout vs data">Race: 3s timeout vs 2s fetch</button>
         </div>
         <div>
           <h3>Async/Await</h3>
           <div class="row">
-            <button id="btnAwaitOk">Await (OK)</button>
-            <button id="btnAwaitFail">Await (Error)</button>
+            <button id="btnAwaitOk" title="await success">Await (OK)</button>
+            <button id="btnAwaitFail" title="await error">Await (Error)</button>
           </div>
         </div>
       </div>
