@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Step Progress Bar — Demo</title>
+  <style>
+    :root{ --line:#3498db; --line-empty:#e0e0e0; --bg:#f6f6fb; --ink:#111 }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg);display:grid;place-items:center;font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial}
+    .container{ text-align:center }
+    .progress-container{ position:relative; display:flex; justify-content:space-between; width:360px; max-width:90vw; margin:0 auto 18px; }
+    .progress-container::before{ content:""; position:absolute; top:50%; left:0; transform:translateY(-50%); height:4px; width:100%; background:var(--line-empty); border-radius:2px; }
+    .progress{ position:absolute; top:50%; left:0; transform:translateY(-50%); height:4px; width:0%; background:var(--line); border-radius:2px; transition:width .35s ease; }
+    .circle{ width:34px; height:34px; border-radius:50%; background:#fff; color:#999; border:3px solid var(--line-empty); display:flex; align-items:center; justify-content:center; transition:border-color .35s ease, color .35s ease }
+    .circle.active{ border-color:var(--line); color:var(--ink) }
+    .row{ display:flex; gap:10px; justify-content:center }
+    .btn{ background:var(--line); color:#fff; border:0; border-radius:8px; padding:8px 18px; cursor:pointer }
+    .btn:disabled{ background:#b8c6d1; cursor:not-allowed }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Step Progress Bar</h1>
+    <p style="color:#555;max-width:560px;margin:6px auto 16px">Gray line is the full track. Blue bar width = <code>(currentStep - 1) / (totalSteps - 1) * 100%</code>. Circles gain <code>.active</code> up to the current step.</p>
+
+    <div class="progress-container">
+      <div class="progress" id="progress"></div>
+      <div class="circle active">1</div>
+      <div class="circle">2</div>
+      <div class="circle">3</div>
+      <div class="circle">4</div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="prev">Prev</button>
+      <button class="btn" id="next">Next</button>
+      <button class="btn" id="reset" style="background:#444">Reset</button>
+    </div>
+  </main>
+
+  <script>
+    // Select elements (IDs must match the markup)
+    const progress = document.getElementById('progress');
+    const circles  = document.querySelectorAll('.circle');
+    const prev     = document.getElementById('prev');
+    const next     = document.getElementById('next');
+    const resetBtn = document.getElementById('reset');
+
+    let currentActive = 1; // 1..circles.length
+
+    function updateStyle(){
+      // Toggle active class on circles
+      circles.forEach((circle, index) => {
+        if(index < currentActive) circle.classList.add('active');
+        else circle.classList.remove('active');
+      });
+      // Compute progress bar width
+      const widthPct = ((currentActive - 1) / (circles.length - 1)) * 100;
+      progress.style.width = widthPct + '%';
+      // Enable/disable buttons
+      prev.disabled = currentActive === 1;
+      next.disabled = currentActive === circles.length;
+    }
+
+    next.addEventListener('click', () => {
+      currentActive++;
+      if(currentActive > circles.length) currentActive = circles.length;
+      updateStyle();
+    });
+
+    prev.addEventListener('click', () => {
+      currentActive--;
+      if(currentActive < 1) currentActive = 1;
+      updateStyle();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      currentActive = 1;
+      updateStyle();
+    });
+
+    updateStyle(); // initial render
+  </script>
+</body>
+</html>

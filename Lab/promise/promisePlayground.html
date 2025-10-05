@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Promises / Promise.all / Promise.race / Async-Await — Playground</title>
+  <style>
+    :root{
+      --bg:#0f172a; --panel:#0b1220; --text:#e5e7eb; --muted:#94a3b8;
+      --accent:#22d3ee; --accent2:#a78bfa; --ok:#34d399; --err:#f87171; --warn:#fbbf24;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(135deg,var(--bg),#020617);color:var(--text);
+         font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial}
+    .wrap{max-width:1000px;margin:24px auto;padding:16px}
+    h1{margin:0 0 8px;font-size:clamp(20px,2.6vw,34px)}
+    p{color:var(--muted)}
+    .card{background:linear-gradient(180deg,var(--panel),#0e1727);border:1px solid #1f2937;border-radius:14px;padding:16px}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input[type="text"],select{flex:1;min-width:220px;background:#050a16;border:1px solid #334155;color:var(--text);border-radius:10px;padding:10px 12px}
+    button{border:1px solid #334155;background:#050a16;color:var(--text);border-radius:12px;padding:10px 14px;cursor:pointer}
+    button:hover{border-color:var(--accent)}
+    button.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#001018;border:0;font-weight:700}
+    .log{background:#020617;border:1px solid #1f2937;border-radius:12px;padding:12px;min-height:220px;max-height:380px;overflow:auto;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New";font-size:13px;line-height:1.5}
+    .line{padding:2px 4px;border-radius:8px}
+    .time{opacity:.6;margin-right:8px}
+    .ok{color:var(--ok)} .err{color:var(--err)} .warn{color:var(--warn)}
+    code{background:#0b1220;border:1px solid #1f2937;padding:2px 6px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Promises / All / Race / Async‑Await — Playground</h1>
+    <p>Choose success or failure, then run each demo to see timing and results.</p>
+
+    <div class="card">
+      <div class="row">
+        <input id="url" type="text" value="/fruit" />
+        <select id="mode">
+          <option value="ok">resolve</option>
+          <option value="fail">reject</option>
+        </select>
+        <button id="clear">Clear Log</button>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div>
+          <h3>buyFruit chain (Promises)</h3>
+          <button id="btnChain" class="primary">Chain: apple → banana → orange</button>
+        </div>
+        <div>
+          <h3>Promise.all</h3>
+          <div class="row">
+            <button id="btnAllOk">All: both pass</button>
+            <button id="btnAllFail">All: one fails</button>
+          </div>
+        </div>
+        <div>
+          <h3>Promise.race</h3>
+          <button id="btnRace">Race: 3s timeout vs 2s fetch</button>
+        </div>
+        <div>
+          <h3>Async/Await</h3>
+          <div class="row">
+            <button id="btnAwaitOk">Await (OK)</button>
+            <button id="btnAwaitFail">Await (Error)</button>
+          </div>
+        </div>
+      </div>
+      <div id="log" class="log" aria-live="polite"></div>
+    </div>
+  </div>
+
+<script>
+// ===== Logger =====
+const $ = (sel) => document.querySelector(sel);
+const logEl = $('#log');
+const stamp = () => new Date().toLocaleTimeString();
+function log(msg, cls=''){
+  const div = document.createElement('div');
+  div.className = `line ${cls}`.trim();
+  div.innerHTML = `<span class="time">[${stamp()}]</span>${msg}`;
+  logEl.appendChild(div); logEl.scrollTop = logEl.scrollHeight;
+}
+$('#clear').addEventListener('click', () => logEl.innerHTML='');
+
+// ===== Simulated APIs (based on your teacher code) =====
+function buyFruit(fruit){
+  return new Promise((resolve,reject) => {
+    const mode = $('#mode').value; // 'ok' or 'fail'
+    setTimeout(() => {
+      if(mode==='fail' && fruit==='banana'){
+        log(`buyFruit(${fruit}) → reject`, 'err');
+        reject(new Error('banana is sold out'));
+        return;
+      }
+      log(`buyFruit(${fruit})`, 'warn');
+      resolve(fruit);
+    }, 800);
+  });
+}
+
+function dataOne(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(() => {
+      const mode = $('#mode').value;
+      if(mode==='fail') reject(new Error('first data validate failed'));
+      else resolve('first data');
+    }, 700);
+  });
+}
+function dataTwo(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(() => {
+      const mode = $('#mode').value;
+      if(mode==='fail') reject(new Error('second data validate failed'));
+      else resolve('second data');
+    }, 600);
+  });
+}
+function timeout(ms, value){
+  return new Promise(resolve => setTimeout(()=> resolve(value), ms));
+}
+function fetchDataSim(){
+  return new Promise(resolve => setTimeout(()=> resolve('some data'), 2000));
+}
+
+// ===== Demos =====
+$('#btnChain').addEventListener('click', () => {
+  log('<b>CHAIN</b> start', 'warn');
+  buyFruit('apple')
+    .then(()=> buyFruit('banana'))
+    .then((res)=> { log(`then got: ${res}`, 'ok'); return buyFruit('orange'); })
+    .then(()=> log('end', 'ok'))
+    .catch(e => log(`chain error: ${e.message}`, 'err'));
+});
+
+$('#btnAllOk').addEventListener('click', () => {
+  $('#mode').value='ok';
+  log('<b>ALL</b> both pass', 'warn');
+  Promise.all([dataOne(), dataTwo()])
+    .then(values => log('All passed: ' + JSON.stringify(values), 'ok'))
+    .catch(e => log('All error: ' + e.message, 'err'));
+});
+
+$('#btnAllFail').addEventListener('click', () => {
+  $('#mode').value='fail';
+  log('<b>ALL</b> one fails → catch first error', 'warn');
+  Promise.all([dataOne(), dataTwo()])
+    .then(values => log('All passed: ' + JSON.stringify(values), 'ok'))
+    .catch(e => log('All error: ' + e.message, 'err'));
+});
+
+$('#btnRace').addEventListener('click', () => {
+  log('<b>RACE</b> timeout(3s) vs fetch(2s)', 'warn');
+  Promise.race([timeout(3000, 'request timeout'), fetchDataSim()])
+    .then(res => {
+      if(res === 'request timeout') log('request timeout', 'err');
+      else log('do something with data', 'ok');
+    });
+});
+
+$('#btnAwaitOk').addEventListener('click', async () => {
+  $('#mode').value='ok';
+  log('<b>AWAIT</b> (OK path)', 'warn');
+  try{
+    await buyFruit('apple');
+    await buyFruit('banana');
+    await buyFruit('orange');
+    log('await end', 'ok');
+  }catch(e){ log('await error: ' + e.message, 'err'); }
+});
+
+$('#btnAwaitFail').addEventListener('click', async () => {
+  $('#mode').value='fail';
+  log('<b>AWAIT</b> (Error path on banana)', 'warn');
+  try{
+    await buyFruit('apple');
+    await buyFruit('banana'); // will throw when mode = fail
+    await buyFruit('orange');
+    log('await end', 'ok');
+  }catch(e){ log('await error: ' + e.message, 'err'); }
+});
+</script>
+</body>
+</html>
