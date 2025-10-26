@@ -1,0 +1,321 @@
+// ==========================================
+// VARIABLES - All Colors & Settings
+// ==========================================
+
+// Colour
+$primary-gradient-start: #667eea;
+$primary-gradient-end: #764ba2;
+$background-gradient-start: #667eea;
+$background-gradient-end: #764ba2;
+
+$text-dark: #333;
+$text-medium: #666;
+$text-light: #555;
+
+$white: #ffffff;
+$border: #e0e0e0;
+
+$result-background-start: #f5f7fa;
+$result-background-end: #c3cfe2;
+
+$tax-bracket-background: #f9fafb
+
+// Spacing
+$container-padding: 40px;
+$section-margin: 30px;
+$item-padding: 15px;
+
+//Border Radius
+$border-radius-large: 20px;
+$border-radius-medium: 15px;
+$border-radius-small: 10px;
+
+// Font Size
+$large-title: 28px;
+$medium-title: 16px;
+$body: 14px;
+$input: 18px;
+
+// Font Family
+$font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+// Transitions
+$transition-speed: 0.3s;
+$transition-timing: ease;
+
+// Shadows
+$shadow-light: 0 10px 20px rgba(102, 126, 234, 0.3);
+$shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+// Z-index
+$z-currency: 10;
+
+
+// ==========================================
+// MIXINS - Reusable Style Blocks
+// ==========================================
+
+// Flexbox Centering Mixin
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+// Gradient Mixin
+@mixin gradient($start, $end) {
+    background: linear-gradient(135deg, $start 0%, $end 100%);
+}
+
+// Transition Mixin
+@mixin transition($property) {
+    transition: $property $transition-speed $transition-timing;
+}
+
+// Shadow Mixin
+@mixin box-shadow($shadow) {
+    box-shadow: $shadow;
+}
+
+//  Input Style Mixin
+@mixin input-style {
+    width: 100%;
+    padding: $item-padding;
+    border: 2px solid $border;
+    border-radius: $border-radius-small;
+    font-size: $input;
+    outline: none;
+}
+
+
+// ==========================================
+// BASE STYLES
+// ==========================================
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: $font-family;
+    @include gradient($background-gradient-start, $background-gradient-end);
+    min-height: 100vh;
+    @include flex-center;;
+    padding: 20px;
+}
+
+main {
+    width: 100%;
+    @include flex-center;;
+}
+
+
+// ==========================================
+// LAYOUT - Container
+// ==========================================
+
+.white-container {
+    background-color: $white;
+    border-radius: $border-radius-large;
+    @include box-shadow($shadow-heavy);
+    max-width: 500px;
+    width: 100%;
+    padding: $container-padding;
+}
+
+
+// ==========================================
+// HEADER SECTION
+// ==========================================
+
+header {
+    text-align: center;
+    margin-bottom: $section-margin;
+
+    .title {
+        color: $text-dark;
+        font-size: $large-title;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: $text-medium;
+        font-size: $body;
+        font-weight: normal;
+    }
+}
+
+
+// ==========================================
+// FORM ELEMENTS
+// ==========================================
+
+form {
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: $section-margin;
+
+    label {
+        display: block;
+        color: $text-dark;
+        font-size: $body;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .input-wrapper {
+        position: relative;
+
+        .currency-symbol {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: $primary-gradient-start;
+            font-size: $input;
+            font-weight: 600;
+            z-index: $z-currency;
+        }   
+
+        input[type="number"] {
+            @include input-style;
+            padding-left: 35px;
+            @include transition(all);
+
+            &:focus {
+                border-color: $background-gradient-start;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+        }
+    }
+}
+
+
+// ==========================================
+// BUTTON
+// ==========================================
+
+.calculate-btn {
+    width: 100%;
+    padding: $item-padding;
+    @include gradient($background-gradient-start, $background-gradient-end);
+    border: none;
+    border-radius: $border-radius-medium;
+    color: $white;
+    font-size: $medium-title;
+    font-weight: 600;
+    cursor: pointer;
+    @include transition(all);
+
+    &:hover {
+        transform: translateY(-2px);
+        @include box-shadow($shadow-light);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+
+// ==========================================
+// RESULTS SECTION
+// ==========================================
+
+.result-section {
+    margin-top: $section-margin;
+    padding: 25px;
+    @include gradient($primary-gradient-start, $primary-gradient-end);
+    border-radius: $border-radius-medium;
+    display: none;
+
+    &.show {
+        display: block;
+        animation: slideIn 0.5s ease;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    &:last-child {
+        border-bottom: none;
+        margin-top: 10px;
+        padding-top: 20px;
+        border-top: 2px solid $primary-gradient-start;
+
+        .result-label {
+            color: $primary-gradient-start;
+            font-size: $medium-title;
+            font-weight: 600;
+        }
+
+         .result-value {
+            color: $primary-gradient-start;
+            font-size: 24px;
+         }
+    }
+
+    .result-label {
+        color: $text-light;
+        font-size: $body;
+    }
+
+    .result-value {
+        color: $text-dark;
+        font-weight: 600;
+        font-size: $medium-title;
+    }
+}
+
+
+// ==========================================
+// TAX BRACKETS SECTION
+// ==========================================
+
+.tax-brackets {
+    margin-top: $section-margin;
+    padding: 20px;
+    background: $tax-bracket-background;
+    border-radius: $border-radius-small;
+
+    h3 {
+        color: $text-dark;
+        font-size: $medium-title;
+        margin-bottom: 15px;
+    }
+}
+
+.bracket-item {
+    font-size: 12px;
+    color: $text-dark;
+    padding: 8px 0;
+    border-bottom: 1px solid $border;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .bracket-range {
+        font-weight: 600;
+        color: $text-dark;
+    }
+}

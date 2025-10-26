@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Tax Calculator</title>
+</head>
+<body>
+    <main>
+        <div class="white-container">
+            <header>
+                <h1 class="title">Tax Calculator</h1>
+                <h3 class="subtitle">Calculate your Australian income tax for 2024-25</h3>
+            </header>
+            <form>
+                <div class="input-group">
+                    <label for="income">Annual Taxable Income</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" id="income" placeholder="0" min="0" step="1">
+                    </div> 
+                </div>
+                <button type="submit" class="calculate-btn">Calculate Tax</button>
+
+                <section id="results" class="result-section">
+                    <div class="result-item">
+                        <span class="result-label">Taxable Income</span>
+                        <span class="result-value" id="display-income">$0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tax Rate</span>
+                        <span class="result-value" id="display-tax-rate">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Income After Tax</span>
+                        <span class="result-value" id="display-income-after-tax">$0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Tax Payable</span>
+                        <span class="result-value" id="display-total-tax">$0</span>
+                    </div>
+                </section>
+
+                <section class="tax-brackets">
+                    <h3>Tax Brackets 2024-25</h3>
+                    <div class="bracket-item">
+                        <span class="bracket-range">$0 – $18,200:</span> Nil
+                    </div>
+                    <div class="bracket-item">
+                        <span class="bracket-range">$18,201 – $45,000:</span> 19c per $1 over $18,200
+                    </div>
+                    <div class="bracket-item">
+                        <span class="bracket-range">$45,001 – $120,000:</span> $5,092 + 32.5c per $1 over $45,000
+                    </div>
+                    <div class="bracket-item">
+                        <span class="bracket-range">$120,001 – $180,000:</span> $29,467 + 37c per $1 over $120,000
+                    </div>
+                    <div class="bracket-item">
+                        <span class="bracket-range">$180,000+:</span> $51,667 + 45c per $1 over $180,000
+                    </div>
+                </section>
+            </form>
+        </div>
+    </main>
+
+    <script type="module" src="/My work/tax_calculator/scripts/app.js"></script>
+</body>
+</html>

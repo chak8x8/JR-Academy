@@ -1,3 +1,4 @@
 {
-    "livePreview.defaultPreviewPath": "/Class code/4-javascript/password-generator/index.html"
+    "livePreview.defaultPreviewPath": "/Class code/4-javascript/password-generator/index.html",
+    "editor.formatOnSave": true
 }
